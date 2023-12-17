@@ -10,4 +10,8 @@
 #### 목표
 * 2초 이하의 타임아웃을 가진 Context를 사용하세요.
 * "net/http/httptest" 패키지를 사용하여 fake 서버를 생성하세요.
-> 결과 코드는 []()
+> 결과 코드는 [여기](https://github.com/zbum/go_for_spring_developer/blob/9e727c3383903b57bc3d0fd8250fd589b1d662dc/03-http-resiliency/e2/main.go#L1)에서 확인할 수 있습니다. 
+> 가능하면 먼저 작업하고 확인용으로 사용하세요.
+> 
+
+
