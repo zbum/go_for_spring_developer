@@ -7,6 +7,7 @@
 
 <br />
 
+## Class 와 메소드
 * 간단한 클래스를 만들어 봅시다.
 ```go
 package main
@@ -14,13 +15,21 @@ package main
 import "fmt"
 
 type Greeter struct {
+	message string
 }
 
-func (g *Greeter) Greet(name string) string {
-	return fmt.Sprintf("Hello, %s!!", name)
+func (g Greeter) Greet(name string) string {
+	return fmt.Sprintf("%s, %s!!", g.message, name)
+}
+
+func (g *Greeter) ChangeMessage(message string) {
+	g.message = message
 }
 ```
 * Go언어에서는 Struct로 클래스를 대체합니다. 
 * 메소드는 리시버를 이용해서 작성합니다.
 * Greeter 이라는 Struct에 Greet 메소드를 추가합니다.
+* Greet 메소드는 value 리시버를 사용하고 있고 ChangeMessage 메소드는 포인터 리시버를 사용하고 있습니다.
+* Greeter 클래스의 필드를 조회할 때는 value 리시버를 사용하고, Greeter의 필드의 값을 수정할때는 포인터 리시버를 사용합니다.
+
 
