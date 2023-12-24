@@ -1,6 +1,6 @@
-# Fx Simple Dependency Injection Example
+# [실습] Fx Simple Dependency Injection
 
-## Fx 없는 DI
+## UserService에 의존하는 UserHandler
 * UserRepository, UserService 라는 스트럭트가 제공됩니다.
 * UserService 는 UserRepository 에 종속성을 가지고 있습니다. 즉, UserRepository 가 적절히 제공될 때만 정상적으로 기능을 제공할 수 있습니다.
 
