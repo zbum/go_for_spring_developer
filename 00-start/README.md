@@ -3,6 +3,7 @@
 * 메모리 효율
   * 이건 Micro Services 아키텍쳐에서 중요한 부분
   * java 시스템 사용량예시 (CPU 보다 메모리 점유율이 너무 높아 비용 상승)
+  * https://programming-language-benchmarks.vercel.app/
 
 ## 시작 
 * 개발 언어를 짧은 시간동안 습득하는 것은 쉽지 않습니다.
