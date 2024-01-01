@@ -189,3 +189,61 @@ type Student struct {
 $ curl localhost:8080/students/1
 {"id":1,"name":"Manty","score":100}%  
 ```
+
+## StudentRepository 작성
+* Ent 프레임워크를 사용합니다. 
+* 터미털에서 다음을 실행하여 Student 스키마를 생성합니다. 
+```shell
+$ go run -mod=mod entgo.io/ent/cmd/ent new --target student/ent/schema Student
+```
+* 생성된 student.go 파일은 다음과 같습니다. 
+```go
+package schema
+
+import "entgo.io/ent"
+
+// Student holds the schema definition for the Student entity.
+type Student struct {
+	ent.Schema
+}
+
+// Fields of the Student.
+func (Student) Fields() []ent.Field {
+	return nil
+}
+
+// Edges of the Student.
+func (Student) Edges() []ent.Edge {
+	return nil
+}
+```
+* 필요한 필드를 추가합니다. 여기서는 id, name, score 를 추가할 수 있습니다. 
+```go
+// Fields of the Student.
+func (Student) Fields() []ent.Field {
+	return []ent.Field{
+		field.Int64("id").
+			Positive(),
+		field.String("name").
+			Default("unknown"),
+		field.Int("score"),
+	}
+}
+```
+
+* 코드 생성을 위해 다음의 파일을 student/ent 디렉토리에 생성합니다. 파일명은 generate.go 입니다.
+```go
+package ent
+
+//go:generate go run -mod=mod entgo.io/ent/cmd/ent generate ./schema
+```
+
+* 이제 다음을 실행하여 코드를 생성합니다.
+```shell
+$ go generate ./...
+```
+
+* 이제 StudentRepository를 작성할 준비가 다 되었습니다. 
+* FindById 메소드의 내용을 다음과 같이 작성합니다.
+
+
