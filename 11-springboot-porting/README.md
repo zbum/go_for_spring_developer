@@ -114,3 +114,78 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
 ```
+## StudentService 포팅
+* Go로 작성한 StudentService는 다음과 같이 GetStudent, RegisterStudent 를 제공합니다. 지금은 특별한 기능을 제공하지 않습니다.
+```go
+package student
+
+type StudentService struct {
+}
+
+func NewStudentService() *StudentService {
+	return &StudentService{}
+}
+
+func (s *StudentService) GetStudent(id int64) *Student {
+	return &Student{id, "Manty", 100}
+}
+
+func (s *StudentService) RegisterStudent(student *Student) {
+}
+```
+
+* StudentHandler가 StudentService를 사용할 수 있도록 의존성을 주입하고 사용하도록 Struct 와 생성자 함수를 수정합니다.
+```go
+type StudentHandler struct {
+	studentService *StudentService
+}
+
+func NewStudentHandler(studentService *StudentService) *StudentHandler {
+	return &StudentHandler{studentService}
+}
+```
+
+* main.go 에서 의존성 주입을 처리합니다.
+```go
+func initStudentHandler() *student.StudentHandler {
+	studentService := student.NewStudentService()
+	return student.NewStudentHandler(studentService)
+}
+```
+
+* StudentHandler 의 메소드 중에 GetStudent를 다음과 같이 구현합니다.
+```go
+func (h *StudentHandler) GetStudent(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id, err := strconv.ParseInt(params["id"], 10, 64)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	student := h.studentService.GetStudent(id)
+	studentBytes, err := json.Marshal(student)
+	w.Write(studentBytes)
+}
+```
+
+* 이제 서버를 실행하고 curl 로 테스트 해보면 다음과 같이 응답합니다. 
+```shell
+$ curl localhost:8080/students/1
+{"Id":1,"Name":"Manty","Score":100}%  
+```
+
+* 여기서 json 속성이 대문자로 시작합니다. Go에서는 외부 패키지에서 접근하기 위해서 Struct의 속성을 대문자로 선언해야 하는 제약이 있습니다.
+* 이 속성을 소문자로 바꾸기 위해서 다음과 같이 주석을 추가합니다. 
+```go
+type Student struct {
+	Id    int64  `json:"id"`
+	Name  string `json:"name"`
+	Score int    `json:"score"`
+}
+```
+* 응답을 확인해 보면 json 속성이 소문자로 보이는 것을 알 수 있습니다.
+```shell
+$ curl localhost:8080/students/1
+{"id":1,"name":"Manty","score":100}%  
+```
