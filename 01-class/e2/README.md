@@ -33,5 +33,33 @@ func NewUserRepository() *UserRepository {
 }
 
 ```
+
 * 스트럭트를 선언합니다. 
-* FindAll() 이라는 메소드를 선언합니다. Go 언어에서는 
+* FindAll() 이라는 메소드를 선언합니다. 
+* 보통 생성자 대신 NewUserRepository 형식의 팩토리 메소드를 작성하여 생성합니다.
+
+## Dependency Injection
+* UserRepository에 의존하는 UserService 객체를 작성해 보겠습니다. 
+```go
+package bean
+
+import "fmt"
+
+type UserService struct {
+	UserRepository *UserRepository
+}
+
+func (s *UserService) GetUsers() []string {
+	return s.UserRepository.FindAll()
+}
+
+func NewUserService(userRepository *UserRepository) *UserService  {
+	fmt.Println("init UserService")
+	return &UserService{userRepository}
+}
+```
+
+* UserService 스트럭트는 `UserRepository *UserRepository` 필드를 가지고 있습니다. 
+* 팩토리 메소드는 의존성 주입을 받기 위한 `*UserRepository` 를 인자로 가지고 있고 UserService 초기화 할때, `*UserRepository` 를 사용합니다.
+
+
