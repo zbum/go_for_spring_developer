@@ -1,4 +1,4 @@
-## ent.
+## An entity framework for Go
 * https://entgo.io/
 * Simple, yet powerful ORM for modeling and querying data.
 
