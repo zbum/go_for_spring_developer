@@ -6,5 +6,7 @@ import (
 )
 
 func main() {
-	log.Printf("%v \n", bean.UserServiceBean.GetUsers())
+	userRepository := bean.NewUserRepository()
+	userService := bean.NewUserService(userRepository)
+	log.Printf("%v \n", userService.GetUsers())
 }

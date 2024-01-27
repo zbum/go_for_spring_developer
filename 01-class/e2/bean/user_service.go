@@ -1,5 +1,7 @@
 package bean
 
+import "fmt"
+
 type UserService struct {
 	UserRepository *UserRepository
 }
@@ -8,8 +10,7 @@ func (s *UserService) GetUsers() []string {
 	return s.UserRepository.FindAll()
 }
 
-var UserServiceBean *UserService
-
-func init() {
-	UserServiceBean = &UserService{UserRepositoryBean}
+func NewUserService(userRepository *UserRepository) *UserService  {
+	fmt.Println("init UserService")
+	return &UserService{userRepository}
 }

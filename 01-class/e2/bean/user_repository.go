@@ -12,9 +12,7 @@ func (u *UserRepository) FindAll() []string {
 	}
 }
 
-var UserRepositoryBean *UserRepository
-
-func init() {
-	UserRepositoryBean = &UserRepository{}
-	fmt.Println(UserServiceBean)
+func NewUserRepository() *UserRepository {
+	fmt.Println("init UserRepository")
+	return new(UserRepository)
 }
