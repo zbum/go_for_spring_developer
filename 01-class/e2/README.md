@@ -14,7 +14,6 @@
 
 * 간단한 사용자 정보를 제공하는 빈을 다음과 같이 만들어 봅시다.
 
-
 ```go
 package bean
 
@@ -27,5 +26,12 @@ func (u *UserRepository) FindAll() []string {
 		"Benjamin",
 	}
 }
-```
 
+func NewUserRepository() *UserRepository {
+	fmt.Println("init UserRepository")
+	return new(UserRepository)
+}
+
+```
+* 스트럭트를 선언합니다. 
+* FindAll() 이라는 메소드를 선언합니다. Go 언어에서는 
