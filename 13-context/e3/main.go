@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"sync"
 	"time"
@@ -14,9 +15,9 @@ func main() {
 
 	wg := sync.WaitGroup{}
 
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 3; i++ {
 		wg.Add(1)
-		go work(ctx, wg, i)
+		go work(ctx, &wg, i)
 	}
 
 	wg.Wait()
@@ -27,24 +28,28 @@ func work(ctx context.Context, wg *sync.WaitGroup, id int) {
 	defer wg.Done()
 	switch id {
 	case 0:
-
+		ctx, cancel := context.WithTimeout(ctx, time.Second)
+		time.AfterFunc(500*time.Millisecond, func() { cancel() })
+		slowTask(ctx, id, fmt.Sprintf("worker %d had a timeout of 1 second", id))
+	case 1:
+		ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+		defer cancel()
+		slowTask(ctx, id, fmt.Sprintf("worker %d had a timeout of 10 second", id))
+	case 2:
+		ctx, cancel := context.WithTimeout(ctx, -1*time.Second)
+		defer cancel()
+		slowTask(ctx, id, fmt.Sprintf("worker %d had a timeout of -1 second", id))
 	}
-	ctx, cancel := context.WithCancel(ctx)
-	//	time.AfterFunc(time.Duration(i+1)*time.Second, cancel)
-	defer cancel()
-	slowFn(ctx, i)
 }
 
-func slowFn(ctx context.Context, i int) {
-	ctx = context.WithValue(ctx, "one", 1)
-	ctx = context.WithValue(ctx, "two", 2)
+func slowTask(ctx context.Context, id int, prefix string) {
+	ctx = context.WithValue(ctx, "id", id)
 
-	log.Printf("slow function %d started. \n", i)
+	fmt.Printf("%d started\n", id)
 	select {
-	case <-time.Tick(3 * time.Second):
-		log.Printf("slow function %d finished\n", i)
+	case <-time.Tick(15 * time.Second):
+		log.Printf("%s: finished\n", prefix)
 	case <-ctx.Done():
-		log.Printf("slow function %d too slow: %s \n", i, ctx.Err())
+		log.Printf("%s: too slow function... returning %s\n", prefix, ctx.Err())
 	}
-
 }

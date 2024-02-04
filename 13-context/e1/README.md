@@ -1,8 +1,8 @@
 ## Context
 * Context 패키지는 데드라인, 취소 시그널이나 요청 범위(request scoped) 의 추가적인 값을 전달하기 위해서 사용합니다.
-* 서버로 들어오는 요청은 컨텍스트를 생성해야 하며, 서버로 나가는 호출은 컨텍스트를 수락해야 합니다. 
-* 이들 사이의 함수 호출 체인은 컨텍스트를 전파해야 하며 
-* 선택적으로 WithCancel, WithDeadline, WithTimeout 또는 WithValue를 사용하여 생성된 파생 컨텍스트로 대체해야 합니다. 
+
+## Context의 특징
+* 컨텍스는 immutable tree structure 로 구현되어 있어서 고루틴에 안전합니다.
 * 컨텍스트가 취소되면 해당 컨텍스트에서 파생된 모든 컨텍스트도 취소됩니다.
 
 
