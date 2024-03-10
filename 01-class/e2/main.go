@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	userRepository := bean.NewUserRepository()
-	userService := bean.NewUserService(userRepository)
-	log.Printf("%v \n", userService.GetUsers())
+	scoreRepository := bean.NewScoreRepository()
+	scoreService := bean.NewScoreService(scoreRepository)
+	log.Printf("%v \n", scoreService.GetScores())
 }

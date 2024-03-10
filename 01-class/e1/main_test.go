@@ -6,7 +6,7 @@ func TestUserRepository_AddUser_FindById(t *testing.T) {
 
 	student := &Student{1, "dummy"}
 
-	g := NewStudentService(DummyStudentRepository{})
+	g := NewStudentService(&DummyStudentRepository{})
 
 	t.Run("GetStudent", func(t *testing.T) {
 		if got := g.GetStudent(1); *got != *student {
@@ -17,7 +17,7 @@ func TestUserRepository_AddUser_FindById(t *testing.T) {
 
 func TestUserRepository_Find_By_ExistId(t *testing.T) {
 
-	g := NewStudentService(DummyStudentRepository{})
+	g := NewStudentService(&DummyStudentRepository{})
 
 	t.Run("RegisterStudent", func(t *testing.T) {
 
