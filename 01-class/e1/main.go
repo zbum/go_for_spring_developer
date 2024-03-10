@@ -2,18 +2,33 @@ package main
 
 import "fmt"
 
-type Greeter struct {
-	message string
+type StudentService struct {
+	studentRepository StudentRepository
 }
 
-func NewGreeter() *Greeter {
-	return &Greeter{"Hello"}
+func NewStudentService(studentRepository StudentRepository) *StudentService {
+	return &StudentService{studentRepository}
 }
 
-func (g Greeter) Greet(name string) string {
-	return fmt.Sprintf("%s, %s!!", g.message, name)
+func (r StudentService) GetStudent(id int64) *Student {
+	return r.studentRepository.FindById(id)
 }
 
-func (g *Greeter) ChangeMessage(message string) {
-	g.message = message
+func (r StudentService) RegisterStudent(student Student) error {
+	if r.studentRepository.FindById(student.id) != nil {
+		return fmt.Errorf("user Already Exists: %d", student.id)
+	}
+	r.studentRepository.Save(student)
+	return nil
+}
+
+// 이하는 이 장에서 다루지 않습니다.
+type Student struct {
+	id   int64
+	name string
+}
+
+type StudentRepository interface {
+	FindById(id int64) *Student
+	Save(student Student) *Student
 }

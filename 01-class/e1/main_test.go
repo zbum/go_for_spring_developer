@@ -2,32 +2,41 @@ package main
 
 import "testing"
 
-func TestGreeter_Greet(t *testing.T) {
-	type args struct {
-		name string
-	}
-	tests := []struct {
-		name string
-		args args
-		want string
-	}{
-		{
-			name: "OK Manty",
-			args: args{name: "Manty"},
-			want: "Hello, Manty!!",
-		},
-		{
-			name: "OK Benjamin",
-			args: args{name: "Benjamin"},
-			want: "Hello, Benjamin!!",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			g := &Greeter{"Hello"}
-			if got := g.Greet(tt.args.name); got != tt.want {
-				t.Errorf("Greet() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+func TestUserRepository_AddUser_FindById(t *testing.T) {
+
+	student := &Student{1, "dummy"}
+
+	g := NewStudentService(DummyStudentRepository{})
+
+	t.Run("GetStudent", func(t *testing.T) {
+		if got := g.GetStudent(1); *got != *student {
+			t.Errorf("FindById() = %v, want %v", got, student)
+		}
+	})
+}
+
+func TestUserRepository_Find_By_ExistId(t *testing.T) {
+
+	g := NewStudentService(DummyStudentRepository{})
+
+	t.Run("RegisterStudent", func(t *testing.T) {
+
+		if got := g.RegisterStudent(*student1); got == nil {
+			t.Errorf("RegisterStudent() = %v, want %v", got, nil)
+		}
+	})
+}
+
+// 이하는 이 장에서 다루지 않습니다.
+
+var student1 = &Student{1, "dummy"}
+
+type DummyStudentRepository struct {
+}
+
+func (r DummyStudentRepository) FindById(id int64) *Student {
+	return student1
+}
+func (r DummyStudentRepository) Save(student Student) *Student {
+	return &student
 }
