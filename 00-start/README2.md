@@ -6,7 +6,8 @@
 
 ## 스프링부트 프로젝트
 * 학생과 학생의 점수를 관리하기 위한 시스템을 구현합니다.  
-* https://github.com/zbum/gfsd_spring_boot_ex1
+* 스프링부트 프로젝트 : https://github.com/zbum/gfsd_spring_boot_ex1
+* Standard Library Go 프로젝트 : https://github.com/zbum/gfsd_go_ex1
 
 ## 기능 요구사항
 * 학생의 정보를 관리합니다. 학생의 정보는 학번과 이름입니다. 
