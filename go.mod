@@ -1,12 +1,12 @@
 module go_for_spring_developer
 
-go 1.21
+go 1.22.1
 
 require (
 	entgo.io/ent v0.12.5
+	github.com/dooray-go/dooray v0.0.4
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-sql-driver/mysql v1.7.1
-	github.com/google/go-github/v57 v57.0.0
 	github.com/google/wire v0.5.0
 	github.com/gorilla/mux v1.8.1
 	go.uber.org/fx v1.20.1
@@ -28,7 +28,6 @@ require (
 	github.com/go-playground/validator/v10 v10.14.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
-	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/hcl/v2 v2.13.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect

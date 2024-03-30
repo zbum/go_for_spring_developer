@@ -91,6 +91,7 @@ Hello, World!
 1. https://pkg.go.dev 사이트에서 dooray-go를 검색합니다.
 2. 검색결과 상단에서 "github.com/dooray-go/dooray" 를 복사합니다.
 3. 다음과 같이 hello.go 를 수정합니다. (배우지 않은 문법은 신경쓰지 않습니다.!!)
+### (e1)
 ```go
 package main
 
@@ -154,6 +155,47 @@ var count = 1
 count := 1
 ```
 
+## 변수 출력
+* 화면(stdout)에 데이터를 출력하려면 fmt.Println() 함수를 사용합니다. 자바의 System.out.println()와 비슷합니다.
+* fmt.Printf()는 자바의 System.out.printf()와 비슷한 기능을 가지고 있습니다. 
+
+### (e2)
+```go
+package main
+
+import (
+    "fmt"
+    "math"
+)
+
+// int 타입의 전역변수
+var Global int = 1234
+//두번째 전역변수, 타입은 int로 추론, ANOTHER_GLOBAL로 이름을 짓지 말것
+var AnotherGlobal = -5678
+
+func main() {
+    // int 타입의 지역변수 0으로 초기화
+    var j int
+    // i 도 int 가 된다.
+    i := Global + AnotherGlobal
+    fmt.Println("Initial j value:", j)
+    j = Global
+
+    // math.Abs() int64 매개변수가 필요합니다. 명시적으로 변환합니다.
+    k := math.Abs(float64(AnotherGlobal))
+    
+    // 형식을 잘 보세요.
+    fmt.Printf("Global=%d, i=%d, j=%d, k=%.2f.\n", Global, i, j, k)
+}
+```
+
+* output
+```
+Initial j value: 0
+Global=1234, i=-4444, j=1234, k=5678.00.
+```
+
+## 흐름 제어
 
 ## 오류 처리
 * exception 없음
