@@ -60,6 +60,7 @@ func (r StudentService) RegisterStudent(student Student) error {
 }
 ```
 * Go언어에서는 Struct로 클래스를 대체합니다. 
+* 타입에는 함수를 추가할 수 있는데 이것을 타입 메소드라고 합니다. 
 * 메소드는 함수에 리시버를 이용해서 작성합니다.
 * NewStudentService 라는 Struct에 GetStudent, RegisterStudent 메소드를 추가합니다.
 * GetStudent, RegisterStudent 메소드는 value 리시버를 사용하고 있습니다.
