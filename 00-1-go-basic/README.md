@@ -384,19 +384,120 @@ a = append(a, b...) // equivalent to "append(a, b[0], b[1], b[2])"
 // a == []string{"John", "Paul", "George", "Ringo", "Pete"}
 ```
 > Java 의 ArrayList를 사용하는 곳에서 사용하면 됩니다.
+
+> 출처 : https://go.dev/blog/slices-intro
+
+## Map
+* go는 HashTable을 구현한 내장 map 을 제공합니다.
+* ConcurrentHashMap 처럼 동시성을 지원하지 않습니다.
+### map 선언과 초기화
+* string 타입을 키로, int 타입을 값으로 m 변수를 선언하는 방법은 다음과 같습니다.
+```go
+var m map[string]int
+```
+* map은 slice 와 같이 참조 타입이므로 초기화 하지 않은 맵을 읽으려고 하면 nil을 반환하지만 값을 주입하려고 하면 Runtime Panic 이 발생합니다.
+* 내장 make 함수를 이용하여 초기화를 해야 합니다.
+```go
+m = make(map[string]int)
+```
+### map의 사용
+* 값 설정
+```go
+m["manty"] = 1
+```
+* 값 조회
+```go
+i := m["manty"]
+j := m["comtin"] 
+// j == 0
+```
+* map의 항목수
+```go
+n := len(m)
+```
+* 항목 제거
+```go
+delete(m, "manty")
+delete(m, "comtin")
+// error 가 발생하지는 않음
+```
+* 항목 존재여부(contains)
+```go
+i, ok := m["manty"]
+// ok == true
+```
+* 항목 존재여부만 확인하려면
+```go
+_, ok := m["manty"]
+// ok == true
+```
+* map의 내용을 loop로 순회하려면
+```go
+for key, value := range m {
+    fmt.Println("Key:", key, "Value:", value)
+}
+```
+* 다른 초기화 방법
+```go
+score := map[string]int{
+    "manty":  100,
+    "comtin": 101,
+}
+```
+### 동시성 처리
+* map 은 동시성을 지원하지 않습니다. 이를 위해서 보통은 sync.RWMutex을 사용하여 부분적인 lock 을 설정합니다.
+```go
+var counter = struct{
+    sync.RWMutex
+    m map[string]int
+}{m: make(map[string]int)}
+```
+* 읽음 처리
+```go
+counter.RLock()
+n := counter.m["some_key"]
+counter.RUnlock()
+fmt.Println("some_key:", n)
+```
+* 쓰기 처리
+```go
+counter.Lock()
+counter.m["some_key"]++
+counter.Unlock()
+```
+* 3rd Party - 동시성 처리를 지원하는 외부 라이브러리 중에 다음의 라이브러리가 많이 사용됩니다.
+  * https://github.com/orcaman/concurrent-map
+  * 동시 처리의 속도를 높이기 위해 map 을 SHARD 로 나누어 구현되었습니다.
+
+> 출처 : https://go.dev/blog/maps
+
+## type - 구조체
+### 구조체 정의
+* 여러 값의 집합을 하나의 데이터 타입으로 묶어 하나의 객체처럼 주고 받는 방법입니다. 
+* 구조체는 새로운 데이터 타입이므로 type 키워드를 사용하고 구조체의 이름, struct 키워드를 사용해야 합니다.
+```go
+type Student struct {
+    Id   int64
+    Name string
+}
+```
+### 구조체 타입 변수 초기화
+* new() 키워드
+  * 적절한 메모리 공간을 할당하고 제로 값으로 만든다.
+  * 할당된 메모리의 포인터를 반환한다.
+
+#### 구조체 타입 변수(E8)
+```go
+
+```
+
+
+
 ## 오류 처리
 * exception 없음
   https://github.com/astaxie/build-web-application-with-golang/blob/master/en/11.1.md
 
 
-## Slice
-* ArrayList 와 매우 흡사함
-
-## Map
-* HashMap 과 흡사함
-* ConcurrentHashMap 처럼 동시성을 지원하지 않음.
-
-## type 정의
 
 ## 인터페이스
 
