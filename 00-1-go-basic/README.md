@@ -196,13 +196,118 @@ Global=1234, i=-4444, j=1234, k=5678.00.
 ```
 
 ## 흐름 제어
+### if/else
+* 조건문에 괄호를 사용하지 않습니다.
+```go
+err := anyFunctionCall()
+if err != nil {
+    // 에러 처리
+}
+```
+>java 에서의 null 은 Go 에서 nil 입니다. 
 
+### switch
+* Go의 switch 문은 두 가지 타입이 있습니다.
+* Go는 Java와 달리 case의 조건이 맞으면 break 가 없어도 다음 조건을 실행하지 않습니다. 
+* 다음 조건을 계속 평가하고 싶다면  fallthrough 를 사용합니다.
+1. switch 문이 평가할 표현식을 가진 경우
+#### (E3)
+```go
+switch argument {
+case "0":
+    fmt.Println("Zero")
+case "1":
+    fmt.Println("One")
+case "2", "3", "4":
+    fmt.Println("2 or 3 or 4")
+    fallthrough
+default:
+    fmt.Println("Value:", argument)
+}
+```
+
+2. switch 문에는 표현식이 없고 case 문에 평가 표현식이 있는 경우
+#### (E4)
+```go
+
+    value, err := strconv.Atoi(argument)
+    if err != nil {
+    fmt.Println("Can not convert to int:", argument)
+    return
+    }
+
+	switch {
+	case value == 0:
+		fmt.Println("영")
+	case value > 0:
+		fmt.Println("양의 정수")
+	case value < 0:
+		fmt.Println("음의 정수")
+	default:
+		fmt.Println("이 조건에 올 수 없습니다.", value)
+	}
+```
+
+### 반복문
+* Go는 반복문으로 for 키워드만 제공합니다. (while 이 없습니다.)
+#### 구구단의 2단 (E5)
+```go
+package main
+
+import "fmt"
+
+func main() {
+	for i := 1; i < 10; i++ {
+		fmt.Printf("%d X %d = %d \n", 2, i, 2*i)
+	}
+}
+```
+* range를 사용하면 slice map 등의 데이터 타입 처리에 반복코드를 제거할 수 있습니다.
+#### 슬라이스에서 데이터 읽기 (E6)
+```go
+  aSlice := []string{"tesla", "nvidia", "apple", "microsoft"}
+
+  for i, v := range aSlice {
+  fmt.Printf("Index : %d, Value : %s\n", i, v)
+  }
+```
+
+## 데이터 모델
+* 대표적으로 Array, Slice, Map 을 제공합니다. 
+
+## Array
+* 배열을 만든 뒤에는 크기를 수정할 수 없습니다.
+* 정의할때 항상 크기를 표시해야 합니다. 
+```go
+firstArray := [4]string{"One", "Two", "Three", "Four"}
+```
+* 또는, [...]으로 컴파일러에게 이 정의가 배열임을 알려 주어야 합니다.
+```go
+secondArray := [...]string{"One", "Two", "Three", "Four"}
+```
+* Array를 함수로 넘길때 배열의 새로운 복사본을 만들어 함수에 전달합니다. 함수에서 배열을 변화시킨 내용은 원래 함수에 반영되지 않습니다.
+* 결론적으로 강력하지 않은 Go의 배열을 잘 쓰이지 않습니다. Slice로...
+
+## Slice
+* 배열과 유사하지만 생성 후에 필요하다면 크기가 커지거나 작아질 수 있습니다.
+* 슬라이스 값은 데이터의 길이, 용량, 내부 배열의 포인터를 갖고 있습니다.
+* reflect 패키지의 SliceHeader 구조체를 보면 알 수 있습니다. 
+
+```go
+type SliceHeader struct {
+	Data uintptr
+	Len  int
+	Cap  int
+}
+```
+* Slice를 함수로 넘길때 헤더만 복사하기 때문에 슬라이스 데이터를 복사해 전달하는 것 보다 성능이 좋습니다.
+* 
+
+> Java 의 ArrayList 와 매우 흡사합니다.
 ## 오류 처리
 * exception 없음
   https://github.com/astaxie/build-web-application-with-golang/blob/master/en/11.1.md
-## 데이터 모델
-* Array, Slice, Map
-## Array
+
 
 ## Slice
 * ArrayList 와 매우 흡사함
