@@ -290,8 +290,8 @@ secondArray := [...]string{"One", "Two", "Three", "Four"}
 
 ## Slice
 * 배열과 유사하지만 생성 후에 필요하다면 크기가 커지거나 작아질 수 있습니다.
-* 슬라이스 값은 데이터의 길이, 용량, 내부 배열의 포인터를 갖고 있습니다.
-* reflect 패키지의 SliceHeader 구조체를 보면 알 수 있습니다. 
+* 슬라이스는 배열을 기반으로 구축된 추상화 입니다.
+  * 슬라이스 값은 데이터의 길이, 용량, 내부 배열의 포인터를 갖고 있습니다.
 
 ```go
 type SliceHeader struct {
@@ -300,10 +300,90 @@ type SliceHeader struct {
 	Cap  int
 }
 ```
-* Slice를 함수로 넘길때 헤더만 복사하기 때문에 슬라이스 데이터를 복사해 전달하는 것 보다 성능이 좋습니다.
-* 
 
-> Java 의 ArrayList 와 매우 흡사합니다.
+![img.png](img.png)
+* Slice를 함수로 넘길때 헤더만 복사하기 때문에 슬라이스 데이터를 복사해 전달하는 것 보다 성능이 좋습니다.
+
+### 슬라이스의 선언
+* 슬라이스는 요소 개수를 생략한다는 점을 제외하면 배열과 동일하게 선언됩니다.
+```go
+aSlice := []string{"One", "Two", "Three", "Four"}
+```
+
+* 또는, make 내장함수를 이용해서 선언할 수 있습니다. 
+```go
+func make([]T, len, cap) []T
+```
+* make 로 슬라이스 선언하기
+```go
+var s []byte
+s = make([]byte, 5, 5)
+```
+* 용량 인수를 생략하면 길이와 동일한 용량이 생성됩니다.
+```go
+s := make([]byte, 5)
+```
+* cap, len 내장함수를 사용하여 용량과 길이를 확인할 수 있습니다. 
+```go
+len(s) == 5
+cap(s) == 5
+```
+
+* 슬라이스는 기존 슬라이스를 잘라낸 새 슬라이스를 만들 수 있습니다. 
+* 콜론(:) 으로 시작 인덱스와 종료 인덱스를 지정하여 잘라낼 수 있습니다. (half-open range)
+> half-open range : 시작 인덱스는 포함하고 종료 인덱스는 포함하지 않는 범위
+```go
+b := []byte{'g', 'o', 'l', 'a', 'n', 'g'}
+// b[1:4] == []byte{'o', 'l', 'a'}
+```
+* 잘라내기를 할때, 시작 인덱스나 종료 인덱스를 생략하여 0 또는 슬라이스의 길이를 의미할 수도 있습니다.
+```go
+// b[:2] == []byte{'g', 'o'}
+// b[2:] == []byte{'l', 'a', 'n', 'g'}
+// b[:] == b
+```
+* 슬라이스를 잘라내면 데이터 배열을 새로 생성하는 것이 아니라 시작 인덱스만 바꾸게 됩니다.
+![img_1.png](img_1.png)
+* b[2:4]
+![img_2.png](img_2.png)
+* 따라서 잘라낸 슬라이스 데이터의 값을 바꾸면 기존 슬라이스의 데이터도 변경됩니다.
+```go
+d := []byte{'g', 'o', 'l', 'a', 'n', 'g'}
+e := d[3:]
+// e == []byte{'n', 'g'}
+e[1] = 'd'
+// e == []byte{'n', 'd'}
+// d == []byte{'g', 'o', 'l', 'a', 'n', 'd'}
+```
+### 슬라이스 크기 변경
+* 슬라이스의 용량을 늘이는 것은 "큰 새 슬라이스를 생성"하고", "데이터를 복사"하는 순서로 이루어 집니다. 
+  * 대부분의 언어에서 동적 배열 구현에서 사용하는 방식입니다. 
+```go
+t := make([]byte, len(s), (cap(s)+1)*2) // +1 in case cap(s) == 0
+for i := range s {
+        t[i] = s[i]
+}
+s = t
+```
+* 보통 슬라이스 맨 끝에 데이터를 추가하는 작업을 많이 하기때문에 append 라는 내장함수가 제공됩니다. 
+```go
+func append(s []T, x ...T) []T
+```
+* 슬라이스 마지막에 원소를 추가하기(List.add)
+```go
+a := make([]int, 1)
+// a == []int{0}
+a = append(a, 1, 2, 3)
+// a == []int{0, 1, 2, 3}
+```
+* 슬라이스 마지막에 다른 슬라이스 원소 전체를 추가하기(List.addAll)
+```go
+a := []string{"John", "Paul"}
+b := []string{"George", "Ringo", "Pete"}
+a = append(a, b...) // equivalent to "append(a, b[0], b[1], b[2])"
+// a == []string{"John", "Paul", "George", "Ringo", "Pete"}
+```
+> Java 의 ArrayList를 사용하는 곳에서 사용하면 됩니다.
 ## 오류 처리
 * exception 없음
   https://github.com/astaxie/build-web-application-with-golang/blob/master/en/11.1.md
