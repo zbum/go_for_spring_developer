@@ -17,6 +17,10 @@ func main() {
 	mantyPtr.Name = "manty"
 	fmt.Println(mantyPtr)
 
+	// Student 구조체 생성(zero value)
+	zero := Student{}
+	fmt.Println(zero)
+
 	// Student 구조체 생성
 	comtin := Student{
 		Id:   2,
