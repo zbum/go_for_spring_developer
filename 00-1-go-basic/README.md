@@ -519,14 +519,33 @@ type Student struct {
 	fmt.Println(comtinPtr)
 ```
 
-
 ## 오류 처리
-* exception 없음
-  https://github.com/astaxie/build-web-application-with-golang/blob/master/en/11.1.md
+* Go 언어에는 Java 의 throws, throw, try-catch-finally 와 같은 키워드가 없습니다.
+* 함수의 호출 결과에 오류가 발생했을 때는 error 타입으로 반환할 수 있습니다. 
+* 예를 들어 파일을 열때, Open 이라는 함수를 사용합니다.  
+```go
+func Open(name string) (file * File, err error)
+```
+* 이 함수는 2개의 반환타입을 가집니다. 함수 호출결과가 정상이라면 file을 반환하고 err는 nil로 반환합니다.
+* Open 함수 실행 중에 오류가 발생하면 err 에 에러 정보가 포함됩니다.
+* go 언어에서 다음의 코드는 Java의 try-catch 문과 같이 자주 나타납니다.
+```go
+f, err := os.Open("filename.ext")
+if err != nil {
+  log.Fatal(err)
+}
+```
+
+### error 타입
+* error는 내장 인터페이스 타입 입니다. 
+```go
+type error interface {
+	Error() string
+}
+```
 
 
-
-## 인터페이스
+> 출처: https://github.com/astaxie/build-web-application-with-golang/blob/master/en/11.1.md
 
 ## 신비로운 키워드 
 * defer
