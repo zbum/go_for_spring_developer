@@ -544,8 +544,126 @@ type error interface {
 }
 ```
 
+* defer
+
 
 > 출처: https://github.com/astaxie/build-web-application-with-golang/blob/master/en/11.1.md
 
-## 신비로운 키워드 
-* defer
+## 포인터
+* 포인터만 보면 화가나는 분?
+### 문법
+* 변수를 선언한다면 타입, 변수의 이름, 초기값의 형태입니다. 
+* 이 변수의 값은 메모리 어딘가에 저장될 것입니다. 
+* 메모리 어딘가에 저장되는 그 장소는 찾아가기 위해 주소도 정해집니다. 
+```go
+var foo int = 23
+```
+* 그 주소는 & 연산자를 이용해서 알 수 있습니다. 
+```go
+fmt.Println(foo, &foo)
+```
+* 출력값에서 값과 변수의 값을 저장하기 위한 주소를 확인할 수 있습니다.
+```
+23 0x14000110018
+```
+* 주소값은 포인터로 선언한 변수에 담을 수 있습니다. 
+```go
+	var fooPtr *int = &foo
+	fmt.Println(fooPtr)
+```
+* 이제 주소에서 가리키는 실제 값을 가져와 보겠습니다. (dereference - *)
+```go
+    fmt.Println(*fooPtr)
+```
+* 포인터에서 * 표시는 두가지 용도로 사용됩니다. (혼란) 
+![img_4.png](img_4.png)
+* 별을 포인터 타입 앞에서 사용하면 포인터 타입을 선언한 것이 됩니다. 
+* 별을 변수 앞에 사용하면 포인터 변수의 실제 값을 가져오는 연산자의 역할을 합니다. 
+
+* 만약 다음과 같이 포인터의 값(*fooPtr)을 새로운 값으로 바꾸면 foo 역시 값이 바뀌어 있음을 알 수 있습니다. 
+```go
+    var foo int = 23
+    var fooPtr *int = &foo
+    
+	*fooPtr = *fooPtr / 2
+	fmt.Println(foo)
+```
+
+### 이렇게 복잡한 포인터를 왜 사용하나요?
+* 변수를 한 메모리에 저장하고 여러곳에서 사용하는 것이 메모리 사용량 측면에서 효율적입니다. 
+* 변수를 정해 두고 함수 호출 전반에서 값을 조작하려면 포인터를 사용하는 것이 편리합니다. 
+
+### call by value, call by reference
+* 다음과 같이 함수를 작성했다면 메인함수에서  plusOneValue(v int) 함수를 호출할때 v 변수를 복사해서 전달합니다. 
+* 이 복사한 값은 호출 스택 내에서만 존재하기 때문에 함수 밖에 영향을 줄 수 없는 불변성을 가집니다. 
+```go
+func plusOneValue(v int) {
+	v += 1
+	fmt.Println(v)
+}
+```
+
+* 이 함수를 다음과 같이 수정한다면, 우리가 Java 의 객체를 전달했을 때와 같이 v 포인터 변수의 값은 공유하게 되고 그 내용을 변경하면 호출 스택 밖에도 영향을 줍니다. 
+```go
+  func plusOnePointer(v *int) {
+      *v += 1
+      fmt.Println(*v)
+  }
+````
+* 포인터는 효율성을 지향하고, 값 변수는 안정성을 지향한다고 볼 수 있습니다.
+
+### 포인터 반환
+* 다음의 코드에서 Init() 함수가 반환하는 Student 타입의 데이터는 반환시 main() 함수가 실행되는 스택으로 복사됩니다. 
+```go
+package main
+
+import "fmt"
+
+type Student struct {
+}
+
+func Init() Student {
+	var student = Student{}
+	return student
+}
+
+func main() {
+	student := Init()
+	fmt.Println(student)
+}
+```
+* 하지만 Init() 함수가 Student 타입의 포인터를 반환하면 상황은 달라집니다.
+* 포인터를 반환하는 순간 Init() 함수의 스택이 사라지므로 student 변수의 데이터를 유지하기 위해 Go컴파일러는 student 데이터를 힙으로 이동시킵니다.
+```go
+package main
+
+import "fmt"
+
+type Student struct {
+}
+
+func Init() *Student {
+	var student = Student{}
+	return &student
+}
+
+func main() {
+	student := Init()
+	fmt.Println(student)
+}
+
+```
+
+* 스택으로 전달되는 과정을 확인해 보려면 다음의 명령으로 실행해 보면 알 수 있습니다.
+```go
+$ go build -gcflags '-m'
+# go_for_spring_developer/00-1-go-basic/e9-1
+./pointer_return.go:8:6: can inline Init
+./pointer_return.go:14:17: inlining call to Init
+./pointer_return.go:15:13: inlining call to fmt.Println
+./pointer_return.go:9:6: moved to heap: student
+./pointer_return.go:14:17: moved to heap: student
+./pointer_return.go:15:13: ... argument does not escape
+```
+* 스택의 데이터를 힙으로 이동하는 부분을 위의 내용으로 확인 할 수 있습니다.
+* 힙에 전달된 메모리는 가비지 컬렉션 대상이 되고, 성능에 영향을 주기 때문에 필요한 경우가 아니면 포인터를 사용하지 않는 것이 좋습니다.
