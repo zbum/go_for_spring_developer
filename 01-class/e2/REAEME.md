@@ -42,38 +42,11 @@ func (s SortableSlice) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
 }
 ```
-## 실습
+## 실습 (workshop01)
 * 다음의 타입을 Id로 정렬하도록 Student 구조체에 타입 메소드를 추가해 주세요.
 
-### Interface 의 예
-* io.Reader
-```go
-type Reader interface {
-    Read(p []byte) (n int, error)
-}
-```
-* io.Writer
-```go
-type Writer interface {
-    Write(p []byte) (n int, error)
-}
-```
-* io.Reader 를 구현하는 예 (수정 및 기능 확인 필요)
-```go
-type Reader struct {
-    data []byte
-    readIndex int64
-}
 
-func (r *Reader) Read(p []byte) (n int, err error) {
-    if r.readIndex >= int64(len(r.data)) {
-        err = io.EOF
-        return
-    }
-
-    n = copy(p, r.data[r.readIndex:])
-    r.readIndex += int64(n)
-    return
-}
-```
-
+## type assertion
+* 인터페이스의 값을 특정 타입처럼 쓸 수 있게 해주는 기능을 말합니다. 
+* Java의 타입 캐스팅과 비슷한 기능입니다.
+* 
