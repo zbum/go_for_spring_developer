@@ -1,7 +1,7 @@
 package main
 
 import (
-	"go_for_spring_developer/01-class/e2/bean"
+	"go_for_spring_developer/01-class/e3/bean"
 	"log"
 )
 
