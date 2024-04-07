@@ -105,6 +105,38 @@ departmentId := r.PathValue("id")
 ```
 * SetPathValue 는 r.PathValue의 응답을 바꾸기 위해 존재합니다. 
 
+## 우선순위
+* 패턴이 겹치는 경우, 구체적인 패턴이 우선순위를 가집니다.
+* 패턴이 충돌하고 한쪽 패턴이 호스트를 가진 경우, 호스트를 가진 경우가 우선합니다. 
+
+![img.png](img.png)
+### 예
+* "dooray.com/" 와 "/" 중에는 호스트를 가진 "dooray.com/" 패턴이 우선합니다.
+* "GET /" 와 "/" 중에는 Http 메소드를 가진 "GET /" 이 더 구체적입니다.
+* HEAD 요청이 왔을때, "HEAD /" 와 "GET /" 중에 HEAD 가 더 구체적입니다. 
+* "/b/{bucket}/o/default" 와 "/b/{bucket}/o/{noun}" 중에는 "/b/{bucket}/o/default" 이 더 구체적인 패턴입니다.
+
+* "/b/{bucket}/{verb}/default" 과 "/b/{bucket}/o/{noun}" 은 충돌입니다.
+  * "/b/k/o/default" 요청 때문에 중복됩니다.
+  * "/b/k/a/default" 요청과 같은 형태 때문에 첫번째 패턴이 더 구체적이라고 볼 수 없습니다.
+  * "/b/k/o/n" 요청과 같은 형태 때문에 두번째 패턴이 더 구체적이라고 볼 수 없습니다.
+
+## 우선순위 연습
+* 다음의 패턴이 등록되어 있다면 우선순위를 생각해 볼 필요가 있습니다.
+```
+1. /item/
+2. POST /item/{user}
+3. /item/{user}
+4. /item/{user}/{id}
+5. /item/{$}
+6. POST alt.com/item/{user}
+```
+
+* "/item/jba" 요청은 3번 패턴과 매칭됩니다. 1번 패턴에 매칭이 되지만 3번이 더 구체적입니다. 
+* POST "/item/jba" 요청은 2번 패턴과 매칭됩니다. 3번 패턴과도 매칭되지만 명시적인 Http 메소드가 있어서 더 구체적입니다.
+* POST "/item/jba/17" 요청은 
+
+
 
 
 
