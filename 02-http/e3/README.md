@@ -63,6 +63,49 @@ func main() {
 }
 ```
 * 클라이언트를 사용하여 위에 나열된 경로에 대해 여러 요청을 발송하고 각각에 대해 다른 응답을 확인합니다. 
-* 라우팅에 지정되지 않은 엔드포인트(예 "/test" )로 요청을 보내보세요. 서버가 응답합니까?
+
+
+## Custom ServerMux 의 Http Method 라우팅
+### 1.21 이전 버전
+* handler는 모든 Http Method 에 대해 응답하기 때문에 handler 내부에 처리할 수 없는 Method 는 405(Method Not Allowed) 처리를 하거나 분기를 해야 합니다.
+```go
+func (g *groupsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	fmt.Fprintf(w, "groups handler called")
+}
+```
+
+### 1.22 이후 
+* func (mux *ServeMux) Handle(pattern string, handler Handler) 함수의 pattern 파라미터의 스팩이 다음의 Proposal 로 변경되어 Http Method 라우팅도 기술 할 수 있게 되었습니다. 
+* https://github.com/golang/go/discussions/60227
+* 따라서 다음과 같이 코드를 작성하여 Http Method 를 지정할 수 있습니다. 
+```go
+    dh := &departmentPostHandler{}
+    mux.Handle("POST /departments", dh)
+```
+* GET 메소드는 HEAD 메소드 요청도 처리합니다.
+
+
+## SpringMVC 의 @PathVariable 은?
+* Go 언어에서 URL의 일부분을 와일드 카드로 두고 처리하는 것을 지원합니다.
+* 와일드 카드는 / 사이의 전체 경로 이어야 합니다. 예를 들어 `/departments/qa_{seq}`와 같은 형태는 지원하지 않습니다.
+* 전달한 와일드 카드를 얻어내기 위해 http.Request에 두 개의 메소드가 추가되었습니다. 
+```go
+package http
+
+func (*Request) PathValue(wildcardName string) string
+func (*Request) SetPathValue(name, value string)
+``` 
+* PathValue 타입 메소드는 와일드 카드의 키 이름으로 값을 찾아오는 기능을 제공합니다.
+```go
+departmentId := r.PathValue("id")
+```
+* SetPathValue 는 r.PathValue의 응답을 바꾸기 위해 존재합니다. 
+
+
+
 
 

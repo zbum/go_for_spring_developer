@@ -49,4 +49,56 @@ func (s SortableSlice) Swap(i, j int) {
 ## type assertion
 * 인터페이스의 값을 특정 타입처럼 쓸 수 있게 해주는 기능을 말합니다. 
 * Java의 타입 캐스팅과 비슷한 기능입니다.
-* 
+
+<br />
+* interface{} 를 반환하는 다음의 함수가 있습니다. 이 함수는 실제 int 타입의 12를 반환합니다. 
+
+```go
+func returnNumber() interface{} {
+	return 12
+}
+```
+
+* 이 함수를 호출하여 받은 결괏값은 interface{} 타입이라 필드, 메소드가 정의 되어 있지 않습니다. 
+```go
+	anInt := returnNumber()
+    anInt++ // 컴파일 에러!!!
+	fmt.Println(anInt)
+}
+```
+* 인터페이스로 받은 값을 실제 타입으로 바꾸기 위해 type assertion 을 다음과 같이 수행합니다.
+```go
+	anInt := returnNumber()
+	number := anInt.(int) // type assertion
+	number++
+	fmt.Println(number)
+```
+
+* 위 예제에서 type assertion은 런타임에 해당 변수가 변환 가능한 것인지 아닌지 확인하지 않았으므로 위험을 내포하고 있습니다. 
+* 만약 type assertion 이 실패 한다면 Panic 을 일으키기 때문에 성공 실패 여부를 확인할 필요가 있습니다. 
+```go
+	anInt := returnNumber()
+	number, ok := anInt.(int)
+	if ok {
+		number++
+		fmt.Println(number)
+	} else {
+		fmt.Println("Type assertion Failed")
+	}
+```
+
+## type switch
+* 인터페이스의 타입을 모르거나 경우의 수가 많을 때는 타입 스위치를 사용합니다. 
+```go
+func switchType(x interface{}) {
+
+	switch T := x.(type) {
+	case Unknown1:
+		fmt.Println("Unknown type")
+	case Unknown2:
+		fmt.Println("Entry type")
+	default:
+		fmt.Printf("Not supported type: %T\n", T)
+	}
+}
+```
