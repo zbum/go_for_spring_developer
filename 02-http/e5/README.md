@@ -1,33 +1,21 @@
 ## HTTP 서버 테스트
-* You can make use of the testing package to test your HTTP servers too. In addition, the net/http/httptest package provides some helpers that make the process painless.
+* Http 서버를 테스트하기 위해 testing 패키지를 사용할 수 있습니다. 
+* Http 테스트를 위해 도움을 주는 net/http/httptest 패키지로 조금 더 쉽게 테스트를 할 수 있습니다.
+ 
+## workshop
+* e4의 워크샵에서 작성한 서버의 응답을 검증할 수 있도록, net/http/httptest 패키지를 사용해서 Http 서버의 응답 내용을 레코딩하는 테스트 코드를 작성하세요.
+* 테스트 코드는 /02-http/e4/workshop/ 디렉토리에 작성하세요.
 
+### 목표
+* net/http/httptest 패키지를 사용해서 응답 http status code, 응답 body 를 레코딩해야 합니다.
+* 테이블 기반 테스팅을 사용합니다.
 
-Exercise 4
-Using your solution to Exercise 3 above (or this one) as a starting point, write a test function that uses the net/http/httptest package to record the your server's HTTP response so you can verify the status code and body for each scenario. Use table-driven testing to iterate over the different scenarios we specified in our original expectations of the program back in Exercise 3.
-
-Objectives
-Make use of the net/http/httptest package to check response status code and body for each scenario.
-Use table-driven testing technique.
-What you need to know
-Take a quick look at the net/http/httptest package document examples to see how it's used in practice.
-Test Coverage
-As you test, you may find it useful to see how much of your code you're covering with your tests. Go offers the ability to generate a coverage report after your tests are run. The coverage report for a solution to Exercise 4 above looks like this:
-
-go test -v -cover
-=== RUN   TestProverbsHandler
---- PASS: TestProverbsHandler (0.00s)
-PASS
-coverage: 68.2% of statements
-ok      github.com/jboursiquot/go-in-3-weeks/exercises/http/e4   0.020s
-Exercise 5
-The Go toolchain also provides a richer coverage report experience through a generated HTML report. Your task is to figure out the command line options for producing and consuming this report. For example, the richer version of the coverage report above for the solution looks like this:
-
-Test Coverage
-
-Check out The cover story for an interesting read of how the cover tool is used in Go.
-
-Objectives
-Use the go toolchain to generate an HTML coverage report you can consume in your browser.
-💡 Rather than running the multi-step process of generating the coverage report manually, you could use tools like Make to bundle all of the commands under one call.
-
-💡 You may also find GoConvey useful as it provides an intuitive and pleasant-looking browser GUI that refreshes while you change the code. It uses all the same standard Go tooling behind the scenes so you can use it on new or existing projects aline.
+### 알아야 할 것
+* 사용법을 알기 위해 [net/http/httptest](https://pkg.go.dev/net/http/httptest) 문서를 살펴 보세요.
+### Test Coverage
+* 테스트를 해보면 여러분이 작성한 테스트의 커버리지를 확인할 수 있습니다. 
+* Go 언어는 테스트를 실행한 후에 커버리지를 제공할 수 있는 기능을 제공합니다. 
+* 커버리지를 알고 싶다면 다음의 명령어로 실행하세요.
+```
+$ go test ./02-http/e5  -v -cover
+```
