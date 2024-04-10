@@ -52,20 +52,42 @@ func main() {
 ```
 
 ### 서브라우터
-* 부모 라우터에서 호스트, 경로 접두사(PathPrefix), HTTP 메소
+* 부모 라우터에서 설정한 호스트, 경로 접두사(PathPrefix), HTTP 메소드 를 기반으로 하위 라우터에서 그 속성을 이어 받는 라우터를 구성할때 사용합니다.
+* PathPrefix 를 이용한 예
+```go
+// PathPrefix 를 이용해서 Subrouter 를 생성합니다.
+groupsMux := r.PathPrefix("/groups").Subrouter()
 
+// groupsMux에 "/{id}" Path 를 적용하면 "/groups/{id}" 형태의 Path 에 대한 라우칭을 처리할 수 있습니다.
+groupsMux.HandleFunc("/{id}", func(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, "Requested Group id : %s\n", mux.Vars(r)["id"])
+}).Methods(http.MethodGet)
 
+groupsSubRouter.HandleFunc("", func(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, "Requested All Groups : \n")
+}).Methods(http.MethodGet)
+````
 
+* Method 를 이용한 예
+```go
+deleteSubRouter := r.Methods(http.MethodDelete).Subrouter()
+deleteSubRouter.HandleFunc("/delete/{id}", func(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, "DELETE Requested delete id : %s\n", mux.Vars(r)["id"])
+})
+```
 
-
+> SpringMvc 에서 Class 수준의 @RequestMapping 을 선언하는 것과 비슷한 역할을 합니다.
 
 ## 유용한 함수
-mux.Vars(r)
+### mux.Vars(r *http.Request)
+* HTTP 요청의 변수를 map[string]string 타입으로 반환합니다.
+* SpringMvc 의 @PathVariable 와 동일한 기능을 제공합니다. 
 
+> 참고 : URL 에 포함된 QueryString 은 표준 라이브러리의 http.URL.Query() 함수로 얻을 수 있습니다.
 
 
 ## Workshop
-* 다음의 RESTful 서버를 개발하세요.
+* 다음의 RESTful 서버를 Gorilla Mux를 이용하여 개발하세요.
 ```http request
 GET /hello
 
