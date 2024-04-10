@@ -1,94 +1,51 @@
-## Other Muxes - gorilla/mux
-* [gorilla-mux](https://github.com/gorilla/mux)
+## 템플릿
+* Go 언어는 Thymeleaf와 같은 템플릿 엔진을 표준라이브러리에서 제공합니다. 
+* 템플릿은 정적인 텍스트와 내장된 커맨드들로 구성된다. 커맨드는 {{ … }} 형식의 구분자로 표기합니다.
+* 템플릿 패키지는 text/template 와 html/template 가 제공되며 모두 동일한 인터페이스를 구현하고 있습니다. 
+* html/template는 웹보안 문제를 강화한 버전입니다. (html escaping 이 주요기능)
 
-* gorilla/mux 패키지는Go 웹 서버를 구축하기 위한 강력한 HTTP 라우터 및 URL matcher 입니다.
-* Go 언어 1.22 버전 부터 기능이 많이 보강되었지만 좀 더 사용하기 쉽고 많은 기능을 제공합니다.
-
-## 기능
-* gorilla/mux 패키지는 요청을 해당 핸들러와 매핑하기 위해 요청 라우터(request router)와 디스패처를 구현합니다.
-* 표준 라이브러리의 http.ServeMux와 같이, mux.Router는 요청을 저장한 경로 목록과 매칭시키고 URL 또는 기타 조건과 일치하는 경로에 대한 핸들러를 호출합니다. 
-<br />
-* 주요 기능은 다음과 같습니다.
-1. 표준라이브러리의 http.ServeMux와 호환되도록 http.Handler 인터페이스를 구현(mux.Router)합니다. 
-2. 요청은 URL 호스트, 경로, 경로 접두사, schemes(http/https), 헤더 및 쿼리 값, HTTP 메소드를 기반으로 합니다.
-3. 서브 라우터를 만들 수 있습니다. 중첩된 라우터는 상위 라우터가 일치하는 경우에만 처리됩니다. 이는 호스트, 경로 접두사 또는 기타 반복되는 속성과 같은 공통 조건을 공유하는 경로 그룹을 정의하는 데 유용합니다.
-
-## 설치
-```
-go get -u github.com/gorilla/mux
-```
-
-## 사용법
-
-* 다음의 코드로 Router 를 생성합니다. 표준 라이브러리가 아니므로 url 을 포함한 경로로 import 를 하여야 합니다.
+## go template 사용예
+### Simple
+* Inventory 구조체의 값을 템플릿에서 바인딩하여 표준출력에 표시하는 내용입니다.
+* {{ … }} 형식의 구분자에 구조체 필드를 .으로 시작하여 설정합니다.
+* 외부 패키지가 읽어야 하기 때문에 구조체 필드는 대문자로 시작해야 합니다.
 ```go
-package main
+type Student struct {
+    Id         int64
+    Name       string
+    Department string
+}
 
-import (
-    "github.com/gorilla/mux"
-)
-
-func main() {
-    r := mux.NewRouter()
+func simple() {
+    template1 := `## Go for Spring Developer (GFSD) - [simple]
+Hello {{.Name}}!!
+`
+    template1Tmpl, err := template.New("template1").Parse(template1)
+    if err != nil {
+        return
+    }
+    
+    err = template1Tmpl.Execute(os.Stdout, Student{Name: "Manty"})
+    if err != nil {
+        return
+    }
 }
 ```
-### 라우터 설정
-```go
-    // "/" 요청을 handlerFunction 으로 전달합니다.
-    r.HandleFunc("/", handlerFunction)
 
-    // "POST" "/url" 요청을 handlerPostFunction 으로 전달합니다.
-    r.HandleFunc("/url", handlerPostFunction).Methods(http.MethodPost)
-
-    // NotFoundHandler 라는 속성에 핸들러를 설정할 수 있습니다. 아무 곳에도 속하지 않는 요청은 이 핸들러가 처리합니다.
-    r.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { 
-        http.Error(w, "Not Found by Manty", http.StatusNotFound)
-    })
-
-    // MethodNotAllowedHandler 라는 속성에 핸들러를 설정할 수 있습니다. url 은 일치하지만 Http 메소드가 일치하지 않으면  이 핸들러가 처리합니다.
-    r.MethodNotAllowedHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        http.Error(w, "Method Not Allowed by Manty", http.StatusMethodNotAllowed)
-    })
+## loop
+* 고 템플릿에서 반복문은 range 키워드를 이용해서 처리할 수 있습니다.
+```gotemplate
+{{range .Students}}
+	Student Name is {{.Name}}
+{{end}}
 ```
 
-### 서브라우터
-* 부모 라우터에서 설정한 호스트, 경로 접두사(PathPrefix), HTTP 메소드 를 기반으로 하위 라우터에서 그 속성을 이어 받는 라우터를 구성할때 사용합니다.
-* PathPrefix 를 이용한 예
-```go
-// PathPrefix 를 이용해서 Subrouter 를 생성합니다.
-groupsMux := r.PathPrefix("/groups").Subrouter()
-
-// groupsMux에 "/{id}" Path 를 적용하면 "/groups/{id}" 형태의 Path 에 대한 라우칭을 처리할 수 있습니다.
-groupsMux.HandleFunc("/{id}", func(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "Requested Group id : %s\n", mux.Vars(r)["id"])
-}).Methods(http.MethodGet)
-
-groupsSubRouter.HandleFunc("", func(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "Requested All Groups : \n")
-}).Methods(http.MethodGet)
-````
-
-* Method 를 이용한 예
-```go
-deleteSubRouter := r.Methods(http.MethodDelete).Subrouter()
-deleteSubRouter.HandleFunc("/delete/{id}", func(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "DELETE Requested delete id : %s\n", mux.Vars(r)["id"])
-})
+## condition
+* 고 템플릿에서 조건 분기는 if 키워드를 이용해서 처리할 수 있습니다.
+```gotemplate
+{{if eq .Name "Manty"}}Good {{else}}Nice {{end}}Student Name is {{.Name}}
 ```
 
-> SpringMvc 에서 Class 수준의 @RequestMapping 을 선언하는 것과 비슷한 역할을 합니다.
-
-## 유용한 함수
-### mux.Vars(r *http.Request)
-* HTTP 요청의 변수를 map[string]string 타입으로 반환합니다.
-* SpringMvc 의 @PathVariable 와 동일한 기능을 제공합니다. 
-
-> 참고 : URL 에 포함된 QueryString 은 표준 라이브러리의 http.URL.Query() 함수로 얻을 수 있습니다.
-
-
-## Workshop
-* 다음의 RESTful 서버를 Gorilla Mux를 이용하여 개발하세요.
-```http request
-GET /hello
-
-```
+## 출처
+* https://pkg.go.dev/text/template
+* https://pkg.go.dev/html/template

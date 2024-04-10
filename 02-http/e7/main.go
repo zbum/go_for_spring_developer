@@ -1,16 +1,28 @@
 package main
 
 import (
-	"fmt"
-	"github.com/gin-gonic/gin"
+	"go_for_spring_developer/02-http/e7/handler"
 	"log"
 	"net/http"
 )
 
 func main() {
-	r := gin.Default()
-	r.Handle(http.MethodGet, "/members/:member-id", func(ctx *gin.Context) {
-		fmt.Fprintf(ctx.Writer, "your member id is %s", ctx.Param("member-id"))
-	})
-	log.Fatal(r.Run(":8080"))
+
+	mh := handler.NewIndexHandler()
+
+	mux := http.NewServeMux()
+
+	//http://localhost:8080/index?name=zbum
+	mux.HandleFunc("GET /index", mh.IndexPage)
+
+	//http://localhost:8080/index2?name=zbum
+	mux.HandleFunc("GET /index2", mh.IndexPageWithTemplate)
+
+	//http://localhost:8080/index3?name=zbum
+	mux.HandleFunc("GET /index3", mh.IndexPageWithTemplateCache)
+
+	//http://localhost:8080/index4?name=zbum
+	mux.HandleFunc("GET /index4", mh.IndexPageWithTemplateCacheAndEmbed)
+
+	log.Fatal(http.ListenAndServe(":8080", mux))
 }
