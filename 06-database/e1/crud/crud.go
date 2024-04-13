@@ -22,6 +22,14 @@ func Insert(db *gorm.DB, student *model.Student) (id uint, rowsAffected int64) {
 	return student.ID, tx.RowsAffected
 }
 
+func Inserts(db *gorm.DB, students []*model.Student) (rowsAffected int64) {
+	tx := db.Create(students)
+	if tx.Error != nil {
+		fmt.Println(db.Error)
+	}
+	return tx.RowsAffected
+}
+
 func FindById(db *gorm.DB, id uint) model.Student {
 	var student model.Student
 	tx := db.Find(&student, id)

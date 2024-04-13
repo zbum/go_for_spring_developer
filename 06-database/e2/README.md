@@ -1,6 +1,11 @@
 ## An entity framework for Go
 * https://entgo.io/
+* facebook 내부에서 사용하다가 오픈소스화 한 것으로 알려져 있습니다.
 * Simple, yet powerful ORM for modeling and querying data.
+
+### github star history
+* 202년 이후 github star가 많아지고 있습니다. 하지만 여전히 gorm 을 많이 사용하고 있는 것으로 판단됩니다.
+![img.png](img.png)
 
 * `go run -mod=mod entgo.io/ent/cmd/ent new --target 06-database/e2/ent/schema User` 을 실행하여 User 스키마를 생성할 수 있습니다.
 ## 실습
