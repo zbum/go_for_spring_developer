@@ -38,7 +38,7 @@ func (s *StudentRepository) FindById(db *gorm.DB, id uint) (model.Student, error
 }
 
 func (s *StudentRepository) FindAll(db *gorm.DB) (students []model.Student, err error) {
-	tx := db.Limit(100).Find(&students)
+	tx := db.Model(&model.Student{}).Preload("Scores").Find(&students)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}

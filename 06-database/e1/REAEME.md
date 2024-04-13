@@ -29,9 +29,14 @@ go get -u gorm.io/gorm
 go get -u github.com/go-sql-driver/mysql
 ```
 
+## 준비
+```sql
+create database gorm;
+```
+
 ## 설정
 * GORM은 MySQL, PostgreSQL, SQLite, SQL Server, TiDB 를 지원합니다.  
-* GORM이 사용할 데이터소스를 설정은 전체 시스템에서 1회만 실행해야 합니다. (권장)
+* GORM이 사용할 데이터소스를 설정은 전체 시스템에서 1회만 실행해야 합니다. 
 ```go
 package main
 
@@ -141,14 +146,41 @@ db.Model(&user).Updates(map[string]interface{}{"name": "hello", "age": 18, "acti
 ### DELETE
 * 삭제는 반드시 primary 키가 값이 있어야 동작합니다. 만약 primary 키 없이 여러건을 삭제할 때는 BATCH DELETE를 사용합니다.
 ```go
-// Update attributes with `struct`, will only update non-zero fields
-db.Model(&user).Updates(User{Name: "hello", Age: 18, Active: false})
-// UPDATE users SET name='hello', age=18, updated_at = '2013-11-17 21:34:10' WHERE id = 111;
+db.Delete(&User{}, 10)
+// DELETE FROM users WHERE id = 10;
 
-// Update attributes with `map`
-db.Model(&user).Updates(map[string]interface{}{"name": "hello", "age": 18, "active": false})
-// UPDATE users SET name='hello', age=18, active=false, updated_at='2013-11-17 21:34:10' WHERE id=111;
+db.Delete(&User{}, "10")
+// DELETE FROM users WHERE id = 10;
 
+db.Delete(&users, []int{1,2,3})
+// DELETE FROM users WHERE id IN (1,2,3);
+
+```
+
+### BATCH DELETE
+```go
+db.Where("email LIKE ?", "%jinzhu%").Delete(&Email{})
+// DELETE from emails where email LIKE "%jinzhu%";
+
+db.Delete(&Email{}, "email LIKE ?", "%jinzhu%")
+// DELETE from emails where email LIKE "%jinzhu%";
+```
+
+### Soft DELETE
+* 필드에 gorm.DeletedAt 이 포함되어 있다면 자동으로 Soft DELETE 가 처리됩니다.
+* Delete 메소드가 호출되면 실제 데이터를 삭제하지 않고 DeletedAt 필드에 현재시작을 등록합니다.
+* 일반적인 Query 메소드로는 해당 레코드를 조회할 수 없습니다.
+
+* Soft DELETE 한 레코드 조회하기
+```go
+db.Unscoped().Where("age = 20").Find(&users)
+// SELECT * FROM users WHERE age = 20;
+```
+
+* Soft DELETE 레코드 삭제하기
+```go
+db.Unscoped().Delete(&order)
+// DELETE FROM orders WHERE id=10;
 ```
 
 ### SELECT

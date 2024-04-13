@@ -19,10 +19,11 @@ func main() {
 	db := initGorm()
 	studentRepository := repository.NewStudentRepository()
 	studentRepositoryWithContext := repository.NewStudentRepositoryWithContext()
+	scoreRepository := repository.NewScoreRepository()
 
 	runCrud(db)
 	_ = runRepository(studentRepository, db)
-	runRepositoryWithTx(studentRepository, db)
+	runRepositoryWithTx(studentRepository, scoreRepository, db)
 	runRepositoryWithTxAndContext(studentRepositoryWithContext, db)
 }
 
@@ -61,7 +62,7 @@ func initGorm() *gorm.DB {
 	sqlDb.SetConnMaxLifetime(1 * time.Hour) // connection의 재사용 가능 시간
 
 	// 테이블 자동 생성
-	err = db.AutoMigrate(&model.Student{})
+	err = db.AutoMigrate(&model.Student{}, &model.Score{})
 	if err != nil {
 		panic(err)
 	}
@@ -166,7 +167,7 @@ func runRepository(repository *repository.StudentRepository, db *gorm.DB) error 
 	return nil
 }
 
-func runRepositoryWithTx(repository *repository.StudentRepository, db *gorm.DB) {
+func runRepositoryWithTx(repository *repository.StudentRepository, scoreRepository *repository.ScoreRepository, db *gorm.DB) {
 	fmt.Println("#### START runRepositoryWithTx ####")
 
 	// 기본 트랜젝션을 일시적으로 중단합니다.
@@ -175,6 +176,13 @@ func runRepositoryWithTx(repository *repository.StudentRepository, db *gorm.DB) 
 		// 저장 (Insert or Update)
 		student := model.Student{Name: "Manty0"}
 		if saveId, savedCount, err := repository.Save(tx, &student); err != nil {
+			return err
+		} else {
+			fmt.Println("[0] Inserted ID, Count : ", saveId, savedCount)
+		}
+
+		score := model.Score{Score: 99, StudentID: student.ID}
+		if saveId, savedCount, err := scoreRepository.Save(tx, &score); err != nil {
 			return err
 		} else {
 			fmt.Println("[0] Inserted ID, Count : ", saveId, savedCount)

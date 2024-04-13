@@ -1,0 +1,11 @@
+datasource:
+  address: 127.0.0.1:3306
+  username: root
+  password: test
+  dbname: test
+  params: "charset=utf8mb4&parseTime=true&loc=GMT"
+  maxIdleConnections: 10
+  maxOpenConnections: 10
+
+#server:
+#  port: 15510
