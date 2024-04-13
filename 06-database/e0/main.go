@@ -4,23 +4,45 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/go-sql-driver/mysql"
 )
 
-var db *sql.DB
+type Student struct {
+	ID       int64
+	Name     string
+	Nickname string
+	Score    float32
+}
 
 func main() {
+
+	db := initDatasource()
+
+	err := insertStudent(db, &Student{ID: 1, Name: "Manty", Nickname: "ManManty", Score: 100})
+	if err != nil {
+		log.Fatal(err)
+	}
+	students, err := findStudentsByName(db, "Manty")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("%v", students)
+}
+
+func initDatasource() *sql.DB {
 	cfg := mysql.Config{
 		User:                 "root",
 		Passwd:               "test",
 		Net:                  "tcp",
-		Addr:                 "localhost:13306",
+		Addr:                 "localhost:3306",
 		DBName:               "test",
 		AllowNativePasswords: true,
 	}
 	var err error
-	db, err = sql.Open("mysql", cfg.FormatDSN())
+	db, err := sql.Open("mysql", cfg.FormatDSN())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -32,22 +54,24 @@ func main() {
 
 	fmt.Println("Connected")
 
-	students, err := findStudentsByName("Zbum");
+	db.SetMaxIdleConns(100)
+	db.SetMaxOpenConns(100)
+	db.SetConnMaxIdleTime(1 * time.Hour) // idle 상태로 유지되는 시간
+	db.SetConnMaxLifetime(1 * time.Hour) // connection의 재사용 가능 시간
+
+	return db
+}
+
+func insertStudent(db *sql.DB, student *Student) error {
+
+	_, err := db.Query("INSERT INTO Students VALUES (?,?,?,?)", student.ID, student.Name, student.Nickname, student.Score)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("findStudentsByName %v: %v", student, err)
 	}
-
-	fmt.Printf("%v", students)
+	return nil
 }
 
-type Student struct {
-	ID       int64
-	Name     string
-	Nickname string
-	Score    float32
-}
-
-func findStudentsByName(name string) ([]Student, error) {
+func findStudentsByName(db *sql.DB, name string) ([]Student, error) {
 	// An students slice to hold data from returned rows.
 	var students []Student
 
