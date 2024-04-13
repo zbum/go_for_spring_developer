@@ -2,23 +2,11 @@ package crud
 
 import (
 	"fmt"
+	"go_for_spring_developer/06-database/e1/model"
 	"gorm.io/gorm"
 )
 
-type Student struct {
-	gorm.Model
-	Name string
-}
-
-func (Student) tableName() string {
-	return "Students"
-}
-
-func (s Student) String() string {
-	return fmt.Sprintf("ID: %d, Name: %s, DeletedAt: %v\n", s.ID, s.Name, s.DeletedAt)
-}
-
-func Save(db *gorm.DB, student *Student) (id uint, rowsAffected int64) {
+func Save(db *gorm.DB, student *model.Student) (id uint, rowsAffected int64) {
 	tx := db.Save(student)
 	if tx.Error != nil {
 		fmt.Println(db.Error)
@@ -26,7 +14,7 @@ func Save(db *gorm.DB, student *Student) (id uint, rowsAffected int64) {
 	return student.ID, tx.RowsAffected
 }
 
-func Insert(db *gorm.DB, student *Student) (id uint, rowsAffected int64) {
+func Insert(db *gorm.DB, student *model.Student) (id uint, rowsAffected int64) {
 	tx := db.Create(student)
 	if tx.Error != nil {
 		fmt.Println(db.Error)
@@ -34,8 +22,8 @@ func Insert(db *gorm.DB, student *Student) (id uint, rowsAffected int64) {
 	return student.ID, tx.RowsAffected
 }
 
-func FindById(db *gorm.DB, id uint) Student {
-	var student Student
+func FindById(db *gorm.DB, id uint) model.Student {
+	var student model.Student
 	tx := db.Find(&student, id)
 	if tx.Error != nil {
 		fmt.Println(db.Error)
@@ -44,7 +32,7 @@ func FindById(db *gorm.DB, id uint) Student {
 	return student
 }
 
-func FindAll(db *gorm.DB) (students []Student) {
+func FindAll(db *gorm.DB) (students []model.Student) {
 	tx := db.Limit(100).Find(&students)
 	if tx.Error != nil {
 		fmt.Println(db.Error)
@@ -53,7 +41,7 @@ func FindAll(db *gorm.DB) (students []Student) {
 }
 
 func UpdateNameById(db *gorm.DB, id uint, newName string) int64 {
-	tx := db.Model(&Student{}).Where("ID = ?", id).Update("Name", newName)
+	tx := db.Model(&model.Student{}).Where("ID = ?", id).Update("Name", newName)
 	if tx.Error != nil {
 		fmt.Println(db.Error)
 		return 0
@@ -62,7 +50,7 @@ func UpdateNameById(db *gorm.DB, id uint, newName string) int64 {
 }
 
 func UpdateNames(db *gorm.DB, newName string) int64 {
-	tx := db.Model(&Student{}).Where("1=1").Updates(Student{Name: newName})
+	tx := db.Model(&model.Student{}).Where("1=1").Updates(model.Student{Name: newName})
 	if tx.Error != nil {
 		fmt.Println(db.Error)
 		return 0
@@ -71,7 +59,7 @@ func UpdateNames(db *gorm.DB, newName string) int64 {
 }
 
 func DeleteById(db *gorm.DB, id uint) int64 {
-	tx := db.Delete(&Student{}, id)
+	tx := db.Delete(&model.Student{}, id)
 	if tx.Error != nil {
 		fmt.Println(db.Error)
 		return 0
@@ -80,7 +68,7 @@ func DeleteById(db *gorm.DB, id uint) int64 {
 }
 
 func DeleteAll(db *gorm.DB) int64 {
-	tx := db.Where("1 = 1").Delete(&Student{})
+	tx := db.Where("1 = 1").Delete(&model.Student{})
 	if tx.Error != nil {
 		fmt.Println(db.Error)
 		return 0
