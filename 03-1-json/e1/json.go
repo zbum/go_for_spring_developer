@@ -1,8 +1,8 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"github.com/go-json-experiment/json"
 )
 
 type StudentRequest struct {
