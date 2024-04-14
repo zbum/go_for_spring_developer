@@ -7,7 +7,7 @@ func (h *helloHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "hello")
 }
 ```
-* 그래서 간편하게 구현할 수 있는 HandlerFunc 를 사용할 수 있습니다. 
+* 그래서 간편하게 함수를 Handler를 구현한 객체로 변환할 수 있는 HandlerFunc 를 사용할 수 있습니다. 
 ### HandlerFunc 정의
 ```go
 // The HandlerFunc type is an adapter to allow the use of
@@ -21,7 +21,7 @@ func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request) {
 f(w, r)
 }
 ```
-* type을 함수형으로 선언하면 '함수 시그니쳐의 커스텀 타입' 으로 선언 됩니다.
+> type을 함수형으로 선언하면 '함수 시그니쳐의 커스텀 타입' 으로 선언 됩니다.
 
 ### HandlerFunc 사용
 ```go

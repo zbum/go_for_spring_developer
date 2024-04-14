@@ -26,7 +26,7 @@ func main() {
 }
 ```
 ## Custom ServeMux
-* 당연히, 애플리케이션의 라우팅을 처리하는 ServeMux를 정의할 수 있습니다. 다음은 애플리케이션에 대한 다양한 요청을 처리하기 위한 사용자 정의의 예입니다.
+* 애플리케이션의 라우팅을 처리하는 ServeMux를 정의할 수 있습니다. 다음은 애플리케이션에 대한 다양한 요청을 처리하기 위한 사용자 정의의 예입니다.
 ```go
 package main
 
@@ -140,7 +140,29 @@ departmentId := r.PathValue("id")
 * POST 요청으로 호스트는 "alt.com" 이고 패스는 "/item/jba" 이면 6번과 매칭됩니다. 2번에 비해 더 구체적입니다. 
 * GET 요청으로 호스트는 "alt.com" 이고 패스는 "/item/jba" 이면 매칭되는 패턴이 없습니다.
 
+## WorkShop (e3/w1)
+* 다음의 API 스펙을 만족하는 웹서비스를 작성하세요.
+### API 스펙
+* GET /members
+  * response
+```
+You reqeuted url=/members, method=GET
+```
 
+* GET /members/{id}
+  * response
+```
+You reqeuted url=/members/1, method=GET
+```
+* POST /members
+    * response
+```
+You reqeuted url=/members, method=POST, body=brabra
+```
+* DELETE /members/{id}
+```
+You reqeuted url=/members/1, method=DELETE
+```
 
 
 

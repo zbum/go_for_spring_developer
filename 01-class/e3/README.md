@@ -8,7 +8,7 @@
 
 ## Bean
 * 저런 특징 때문에 프레임워크가 자동으로 처리하는 부분이 극히 없음
-* 따라서 Bean 을 작성하려면 직접 객체를 생성하고 의존성을 부여
+* 따라서 Bean 을 작성하려면 직접 객체를 생성하고 의존성을 부여해야 합니다.
 * bean scope 속성도 개발자가 직접 제어
 <br />
 
@@ -73,8 +73,8 @@ func NewScoreRepository() *ScoreRepository {
 }
 ```
 
-* 스트럭트를 선언합니다. 
-* FindAll() 이라는 메소드를 선언합니다. 전 시간에 배운 것처럼 리시버를 사용해야 합니다. 
+* 구조체를 선언합니다. 
+* FindAll() 이라는 타입 메소드를 선언합니다. 전 시간에 배운 것처럼 리시버를 사용해야 합니다. 
 * 보통 생성자 대신 NewScoreRepository 형식의 팩토리 메소드를 작성하여 생성합니다.
 
 ## Dependency Injection
@@ -100,3 +100,4 @@ func (s *ScoreService) GetScores() []Score {
 * 팩토리 메소드는 의존성 주입을 받기 위한 `*ScoreRepository` 를 인자로 가지고 있고 ScoreService 초기화 할때, `*ScoreRepository` 타입의 인자를 사용합니다.
 
 
+> 10장에서 Dependency Injection 을 하는 외부 라이브러리를 확인해 보겠습니다. 

@@ -42,7 +42,7 @@ func (s SortableSlice) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
 }
 ```
-## 실습 (workshop01)
+## 실습 (e2/w1)
 * 다음의 타입을 Id로 정렬하도록 Student 구조체에 타입 메소드를 추가해 주세요.
 
 

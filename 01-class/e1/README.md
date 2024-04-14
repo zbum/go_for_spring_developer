@@ -2,7 +2,7 @@
 * Go는 클래스(Class)가 없습니다.
 * Struct가 Class의 역할을 수행 할 수 있기는 하지만 메서드도 구조체로부터 분리되는 구성을 가지고 있습니다.
 * 단일 상속도 없고 당연히 다중 상속도 없습니다.
-* 객체지향스럽지 않은 언어로 보일 수 있겠지만 충분히 객체지향적입니다.
+* 객체지향스럽지 않은 언어로 보일 수 있겠지만 충분히 객체지향적으로 구현할 수 있습니다.
 
 <br />
 
@@ -62,6 +62,6 @@ func (r StudentService) RegisterStudent(student Student) error {
 * Go언어에서는 Struct로 클래스를 대체합니다. 
 * 타입에는 함수를 추가할 수 있는데 이것을 "타입 메소드"라고 합니다. 
 * 메소드는 함수에 리시버를 이용해서 작성합니다.
-* NewStudentService 라는 Struct에 GetStudent, RegisterStudent 메소드를 추가합니다.
+* StudentService 라는 Struct에 GetStudent, RegisterStudent 메소드를 추가합니다.
 * GetStudent, RegisterStudent 메소드는 value 리시버를 사용하고 있습니다.
 * NewStudentService 메소드는 외부 패키지에서도 접근할 수 있도록 GetStudent, RegisterStudent와 같이 대문자로 시작하는 함수명을 가지고 있습니다. 이것은 Go 에서 Export 하였다고 말합니다.

@@ -10,11 +10,11 @@ func NewStudentService(studentRepository StudentRepository) *StudentService {
 	return &StudentService{studentRepository}
 }
 
-func (r StudentService) GetStudent(id int64) *Student {
+func (r *StudentService) GetStudent(id int64) *Student {
 	return r.studentRepository.FindById(id)
 }
 
-func (r StudentService) RegisterStudent(student Student) error {
+func (r *StudentService) RegisterStudent(student Student) error {
 	if r.studentRepository.FindById(student.id) != nil {
 		return fmt.Errorf("user Already Exists: %d", student.id)
 	}
