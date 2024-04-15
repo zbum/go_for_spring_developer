@@ -1,15 +1,22 @@
-## 실습 환경 구성
-## go 설치
-* 다운로드 : https://go.dev/dl/
-* 설치 파일 실행
+## Go 설치
+* Go 언어는 공식 사이트(https://go.dev/doc/install)에서 다운로드 받아 설치하는 것을 권장합니다.
+    * 패키지 매니저는 버전 업데이트가 너무 느리거나 중단한 경우가 많습니다.
+1. https://go.dev/dl/ 에서 PC 플랫폼용 바이너리를 찾아 다운로드 합니다.
+2. Microsoft Windows, macOS는 설치 패키지로 제공됩니다. 따라서, 다운로드한 파일을 실행하여 설치합니다.
+3. Linux 배포본은 다음의 명령어를 사용합니다.
+* 기존 go 바이너리 삭제 및 신규 패키지 설치
 ```shell
-go version 
+$ sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.22.1.linux-amd64.tar.gz
 ```
-* v1.22.2 확인
-
-## 참고
-* Linux 의 패키지 매니저는 버전이 매우 느림
-* Mac의 brew는 version 업데이트가 잘 되어 사용할 만 함
+* 실행 경로 추가
+```shell
+export PATH=$PATH:/usr/local/go/bin
+```
+4. 설치후 다음의 명령어로 원하는 go version 설치를 확인 합니다.
+```shell
+$ go version
+```
+> 출처: https://go.dev/doc/install
 
 ## IDE - GoLand
 * https://www.jetbrains.com/ko-kr/go/

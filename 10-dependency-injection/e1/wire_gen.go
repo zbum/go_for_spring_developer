@@ -7,13 +7,13 @@
 package main
 
 import (
-	bean2 "go_for_spring_developer/10-dependency-injection/e1/bean"
+	"go_for_spring_developer/10-dependency-injection/e1/bean"
 )
 
 // Injectors from wire.go:
 
-func initializeUserService() *bean2.UserService {
-	userRepository := bean2.NewUserRepository()
-	userService := bean2.NewUserService(userRepository)
+func initializeUserService() *bean.UserService {
+	userRepository := bean.NewUserRepository()
+	userService := bean.NewUserService(userRepository)
 	return userService
 }
