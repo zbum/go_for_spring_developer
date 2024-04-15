@@ -1,9 +1,7 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
 	"go.uber.org/fx"
 )
 
@@ -13,19 +11,16 @@ type User struct {
 	Age  int
 }
 
-type UserRepository struct {
-	db *sql.DB
-}
+type UserRepository struct{}
 
 func NewUserRepository() *UserRepository {
 	return &UserRepository{}
 }
-func (r UserRepository) GetUsers() []User {
+func (UserRepository) GetUsers() []User {
 	return []User{
-		{Id: 1, Name: "Manty1", Age: 10},
-		{Id: 2, Name: "Manty1", Age: 20},
-		{Id: 3, Name: "Manty1", Age: 30},
-		{Id: 4, Name: "Manty1", Age: 40},
+		{Id: 1, Name: "Manty", Age: 40},
+		{Id: 2, Name: "Manty1", Age: 41},
+		{Id: 3, Name: "Manty2", Age: 42},
 	}
 }
 
@@ -46,6 +41,13 @@ func (s UserService) GetUsers() []User {
 func Start(s *UserService) {
 	fmt.Println(s.GetUsers())
 }
+
+//func main() {
+//	r := NewUserRepository()
+//	s := NewUserService(r)
+//
+//	Start(s)
+//}
 
 func main() {
 	fx.

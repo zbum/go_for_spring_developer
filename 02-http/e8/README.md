@@ -85,9 +85,5 @@ deleteSubRouter.HandleFunc("/delete/{id}", func(w http.ResponseWriter, r *http.R
 > 참고 : URL 에 포함된 QueryString 은 표준 라이브러리의 http.URL.Query() 함수로 얻을 수 있습니다.
 
 
-## Workshop
-* 다음의 RESTful 서버를 Gorilla Mux를 이용하여 개발하세요.
-```http request
-GET /hello
-
-```
+## Workshop(e8/w1)
+* e5의 예제를 Gorilla Mux를 이용하여 개발하세요.

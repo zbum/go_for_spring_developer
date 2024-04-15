@@ -43,6 +43,9 @@ $ go get -u github.com/gin-gonic/gin
 package main
 
 import (
+    "log"
+    "fmt"
+    "net/http"
 	"github.com/gin-gonic/gin"
 )
 
