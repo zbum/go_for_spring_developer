@@ -1,6 +1,3 @@
-
-
-
 ## 오류 처리
 * Go 언어에는 Java 의 throws, throw, try-catch-finally 와 같은 키워드가 없습니다.
 * 함수의 호출 결과에 오류가 발생했을 때는 error 타입으로 반환할 수 있습니다.
@@ -53,6 +50,53 @@ if err != nil {
 }
 ```
 
+## Custom Error
+* Error 는 인터페이스이기 때문에 개발자가 원하는 에러를 직접 개발할 수 있습니다. 
+* Error 인터페이스의 Error() string 메소드를 구현하면 됩니다. 
+* Java 에서 보통 RuntimeException 을 상속하여 비즈니스 로직을 예외를 명시하는 예외 클래스를 작성합니다.
+```java
+public class StudentNotFoundException extends RuntimeException {
+    public StudentNotFoundException(Long id) {
+        super("Student Not Found : " + id);
+    }
+}
+```
+* 이런 예외는 Go에서 Error를 구현하여 처리할 수 있습니다.
+```go
+type StudentNotFoundError struct {
+	Id   int32
+}
 
-> 출처: https://github.com/astaxie/build-web-application-with-golang/blob/master/en/11.1.md
+func (e *StudentNotFoundError) Error() string {
+	return fmt.Sprintf("Student Not Found : %d", e.Id)
+}
+```
+
+## 주의
+* Java 에서는 throw Exception, try-catch-finally 등을 아주 익숙하고 편리하게 사용했지만 Go에서는 제공하지 않습니다. 
+* 비슷한 기능을 하는 panic() , recover() 내장 함수가 제공되지만 이 것은 시스템 자체가 회복 불가능한 상황을 말하는 것입니다.(예를 들어 필수적인 모듈이 초기 로딩에서 실패한 경우)
+* 대부분의 경우, error 을 이용해서 예외를 처리해야 합니다. 
+
+### panic 과 recover() 의 예
+```go
+func main() {
+    defer func() {
+        if r := recover(); r != nil {
+            fmt.Println("Recovered!!", r)
+        }
+    }()
+    
+    panic("I called a panic()!!")
+    fmt.Println("After Panic") // panic 때문에 이 구문은 실행되지 않습니다.
+}
+```
+* 결과
+```
+Recovered!! I called a panic()!!
+```
+
+
+## 참고
+https://github.com/astaxie/build-web-application-with-golang/blob/master/en/11.1.md
+https://go.dev/blog/error-handling-and-go
 

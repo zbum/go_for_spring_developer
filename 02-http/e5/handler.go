@@ -49,7 +49,7 @@ func (h *messagesHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 		m, err := h.lookup(id)
-		if err == unknownMessage {
+		if errors.Is(err, unknownMessage) {
 			http.Error(w, unknownMessage.Error(), http.StatusNotFound)
 			return
 		}

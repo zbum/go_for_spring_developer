@@ -2,7 +2,7 @@
 * [gorilla-mux](https://github.com/gorilla/mux)
 
 * gorilla/mux 패키지는Go 웹 서버를 구축하기 위한 강력한 HTTP 라우터 및 URL matcher 입니다.
-* Go 언어 1.22 버전 부터 기능이 많이 보강되었지만 좀 더 사용하기 쉽고 많은 기능을 제공합니다.
+* Go 언어 1.22 버전 부터 http 패키지의 기능이 많이 보강되었지만 좀 더 사용하기 쉽고 많은 기능을 제공합니다.
 
 ## 기능
 * gorilla/mux 패키지는 요청을 해당 핸들러와 매핑하기 위해 요청 라우터(request router)와 디스패처를 구현합니다.
@@ -19,7 +19,6 @@ go get -u github.com/gorilla/mux
 ```
 
 ## 사용법
-
 * 다음의 코드로 Router 를 생성합니다. 표준 라이브러리가 아니므로 url 을 포함한 경로로 import 를 하여야 합니다.
 ```go
 package main
