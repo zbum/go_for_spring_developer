@@ -30,3 +30,7 @@ go version
 ```
 git clone https://github.com/zbum/go_for_spring_developer.git
 ```
+* git clone 후 다음 명령을 수행하여 라이브러리를 다운로드 받습니다. 
+```
+$ go mod tidy
+```

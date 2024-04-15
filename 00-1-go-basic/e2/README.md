@@ -54,3 +54,64 @@ func main() {
 Initial j value: 0
 Global=1234, i=-4444, j=1234, k=5678.00.
 ```
+
+## 상수
+* 상수는 const 키워드를 사용합니다.
+* 기본 선언 방법은 const 뒤에 상수명을 적고 그뒤에 상수 타입, 상수값을 기술하는 방식입니다. 
+```go
+package a 
+
+const studentCount int = 10
+const helloPrefix string = "Hi"
+```
+> Java 의 네이밍 컨벤션은 STUDENT_COUNT, HELLO_PREFIX 이겠지만 Go의 변수,상수, 패키지 함수 이름에 _ 네이밍을 사용하지 않습니다.
+> https://gosudaweb.gitbooks.io/effective-go-in-korean/content/names.html
+
+* 상수도 변수와 같이 타입추론이 동작합니다. 
+* 상수를 묶어서 선언 할 수 있습니다. 
+```go
+package b
+
+const (
+    Visa = "Visa"
+    Master = "MasterCard"
+    Amex = "American Express"
+)
+```
+* java의 ENUM 은 Go에서 제공되지 않습니다. 대신 iota 라는 키워드를 이용하여 적용할 수 있습니다. 
+* 아래 예제와 같이 iota 는 상수 묶음에서 1씩 증가된 값으로 처리됩니다. 
+```go
+package c
+
+const (
+    Apple   = iota // 0
+    Grape   = iota // 1
+    Orange  = iota // 2
+)
+```
+* 상수의 내용이 같은 경우는 생략할 수 있기 때문에 다음과 같이 코드를 수정할 수 있습니다. 
+```go
+package c
+
+const (
+    Apple   = iota // 0
+    Grape          // 1
+    Orange         // 2
+)
+```
+
+* iota의 0을 제거하고 싶으면 _ 를 사용합니다.
+```go
+package c
+
+const (
+    _ = iota       // 0
+    Apple   = iota // 1
+    Grape          // 2
+    Orange         // 3
+)
+```
+
+## 실습 (e2/w1)
+* humanReadable 함수는 입력받은 바이트 값을 사람이 읽기 좋은 단위로 변환한 문자열을 반환해 주는 코드 입니다. 
+* 현재 구현은 KiB 까지만 변환하고 있습니다. MiB, GiB, TiB 도 변환할 수 있도록 코드를 수정해 주세요.
