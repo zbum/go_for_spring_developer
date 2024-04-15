@@ -53,4 +53,56 @@ func main() {
 	http.ListenAndServe(port, limit(mux))
 }
 ```
+* 위코드는 초당 최대 1개의 요청을 허용하고 3개의 요청 버스트를 허용합니다.
+```
+➜  e3 git:(master) ✗ make
+HTTP/1.1 200 OK
+Date: Mon, 15 Apr 2024 16:36:09 GMT
+Content-Length: 2
+Content-Type: text/plain; charset=utf-8
 
+OK
+---
+HTTP/1.1 200 OK
+Date: Mon, 15 Apr 2024 16:36:09 GMT
+Content-Length: 2
+Content-Type: text/plain; charset=utf-8
+
+OK
+---
+HTTP/1.1 200 OK
+Date: Mon, 15 Apr 2024 16:36:09 GMT
+Content-Length: 2
+Content-Type: text/plain; charset=utf-8
+
+OK
+---
+HTTP/1.1 429 Too Many Requests
+Content-Type: text/plain; charset=utf-8
+X-Content-Type-Options: nosniff
+Date: Mon, 15 Apr 2024 16:36:09 GMT
+Content-Length: 18
+
+Too Many Requests
+
+---
+HTTP/1.1 429 Too Many Requests
+Content-Type: text/plain; charset=utf-8
+X-Content-Type-Options: nosniff
+Date: Mon, 15 Apr 2024 16:36:09 GMT
+Content-Length: 18
+
+Too Many Requests
+
+---
+HTTP/1.1 429 Too Many Requests
+Content-Type: text/plain; charset=utf-8
+X-Content-Type-Options: nosniff
+Date: Mon, 15 Apr 2024 16:36:09 GMT
+Content-Length: 18
+
+Too Many Requests
+
+---
+
+```

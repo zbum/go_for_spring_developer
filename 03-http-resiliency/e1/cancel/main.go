@@ -11,7 +11,7 @@ func cancellableGreetHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Handling greeting request")
 	defer log.Println("Handled greeting request")
 
-	completeAfter := time.After(5 * time.Second)
+	completeAfter := time.After(100 * time.Second)
 	ctx := r.Context()
 
 	for {

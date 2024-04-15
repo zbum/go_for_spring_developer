@@ -34,6 +34,7 @@ func main() {
 	r := flag.Float64("rate", defaultRate, "rate limit (float)")
 	b := flag.Int("burst", defaultBurst, "burst limit (int)")
 	flag.Parse()
+
 	limiter = rate.NewLimiter(rate.Limit(*r), *b)
 
 	mux := http.NewServeMux()
@@ -42,5 +43,5 @@ func main() {
 	})
 
 	log.Printf("Server ready on %s with allowed rate of %v req/s and burst of %v reqs...", port, *r, *b)
-	http.ListenAndServe(port, limit(mux))
+	log.Fatal(http.ListenAndServe(port, limit(mux)))
 }
