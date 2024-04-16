@@ -30,7 +30,7 @@ func main() {
 		}(i)
 	}
 
-	time.AfterFunc(4*time.Second, cancel)
+	time.AfterFunc(4*time.Second, cancel) // 4초 후에 cancel 을 호출
 	wg.Wait()
 	log.Println("completed")
 }
