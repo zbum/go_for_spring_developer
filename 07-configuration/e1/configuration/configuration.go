@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/spf13/viper"
-	"go_for_spring_developer/06-configuration/e1/resources"
+	"go_for_spring_developer/07-configuration/e1/resources"
 	"os"
 )
 

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"go_for_spring_developer/06-configuration/e1/configuration"
+	"go_for_spring_developer/07-configuration/e1/configuration"
 	"os"
 	"os/signal"
 	"syscall"

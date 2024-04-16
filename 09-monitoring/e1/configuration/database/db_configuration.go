@@ -2,7 +2,7 @@ package database
 
 import (
 	"github.com/zbum/scouter-agent-golang/scouterx/strace"
-	"go_for_spring_developer/08-monitoring/e1/model"
+	"go_for_spring_developer/09-monitoring/e1/model"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

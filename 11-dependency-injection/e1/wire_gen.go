@@ -7,7 +7,7 @@
 package main
 
 import (
-	"go_for_spring_developer/10-dependency-injection/e1/bean"
+	"go_for_spring_developer/11-dependency-injection/e1/bean"
 )
 
 // Injectors from wire.go:

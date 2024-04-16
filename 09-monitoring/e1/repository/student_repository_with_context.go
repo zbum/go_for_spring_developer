@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/zbum/scouter-agent-golang/scouterx/strace"
-	"go_for_spring_developer/08-monitoring/e1/model"
+	"go_for_spring_developer/09-monitoring/e1/model"
 	"gorm.io/gorm"
 )
 

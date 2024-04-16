@@ -3,9 +3,9 @@ package service
 import (
 	"context"
 	"github.com/zbum/scouter-agent-golang/scouterx/strace"
-	"go_for_spring_developer/08-monitoring/e1/configuration/database"
-	"go_for_spring_developer/08-monitoring/e1/model"
-	"go_for_spring_developer/08-monitoring/e1/repository"
+	"go_for_spring_developer/09-monitoring/e1/configuration/database"
+	"go_for_spring_developer/09-monitoring/e1/model"
+	"go_for_spring_developer/09-monitoring/e1/repository"
 	"gorm.io/gorm"
 )
 
