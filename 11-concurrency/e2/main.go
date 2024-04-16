@@ -2,61 +2,22 @@ package main
 
 import (
 	"fmt"
-	"sync"
+	"math/rand"
+	"time"
 )
 
 func main() {
-	c := gen(2, 3)
-	out1 := sq(c)
-	out2 := sq(c)
-
-	for n := range merge(out1, out2) {
-		fmt.Println(n)
+	c := make(chan string)
+	go boring("boring!", c)
+	for i := 0; i < 5; i++ {
+		fmt.Printf("You say: %q\n", <-c) // Receive expression is just a value.
 	}
+	fmt.Println("You're boring; I'm leaving.")
 }
 
-func gen(nums ...int) <-chan int {
-	out := make(chan int)
-	go func() {
-		for _, num := range nums {
-			out <- num
-		}
-		close(out)
-	}()
-	return out
-}
-
-func sq(in <-chan int) <-chan int {
-	out := make(chan int)
-	go func() {
-		for n := range in {
-			out <- n * n
-		}
-		close(out)
-	}()
-	return out
-}
-
-func merge(cs ...<-chan int) <-chan int {
-	var wg sync.WaitGroup
-	out := make(chan int)
-
-	output := func(c <-chan int) {
-		for n := range c {
-			out <- n
-		}
-		wg.Done()
+func boring(msg string, c chan string) {
+	for i := 0; ; i++ {
+		c <- fmt.Sprintf("%s %d", msg, i) // Expression to be sent can be any suitable value.
+		time.Sleep(time.Duration(rand.Intn(1e3)) * time.Millisecond)
 	}
-	wg.Add(len(cs))
-
-	for _, c := range cs {
-		go output(c)
-	}
-
-	go func() {
-		wg.Wait()
-		close(out)
-	}()
-
-	return out
 }
