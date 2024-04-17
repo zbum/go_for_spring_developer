@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
-	"go_for_spring_developer/07-database/e1/crud"
-	"go_for_spring_developer/07-database/e1/model"
-	"go_for_spring_developer/07-database/e1/repository"
+	"go_for_spring_developer/08-database/e1/crud"
+	"go_for_spring_developer/08-database/e1/model"
+	"go_for_spring_developer/08-database/e1/repository"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
