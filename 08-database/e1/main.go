@@ -29,7 +29,7 @@ func main() {
 
 func initGorm() *gorm.DB {
 	cfg := mysql.Config{
-		DSN: "root:test@tcp(localhost:3306)/gorm?charset=utf8&parseTime=True&loc=Local",
+		DSN: "root:test@tcp(localhost:3306)/test?charset=utf8&parseTime=True&loc=Local",
 	}
 	var err error
 

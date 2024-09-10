@@ -10,17 +10,15 @@ import (
 )
 
 type Student struct {
-	ID       int64
-	Name     string
-	Nickname string
-	Score    float32
+	ID   int64
+	Name string
 }
 
 func main() {
 
 	db := initDatasource()
 
-	err := insertStudent(db, &Student{ID: 1, Name: "Manty", Nickname: "ManManty", Score: 100})
+	err := insertStudent(db, &Student{ID: 1, Name: "Manty"})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -64,9 +62,9 @@ func initDatasource() *sql.DB {
 
 func insertStudent(db *sql.DB, student *Student) error {
 
-	_, err := db.Query("INSERT INTO Students VALUES (?,?,?,?)", student.ID, student.Name, student.Nickname, student.Score)
+	_, err := db.Query("INSERT INTO Students(id, name) VALUES (?,?)", student.ID, student.Name)
 	if err != nil {
-		return fmt.Errorf("findStudentsByName %v: %v", student, err)
+		return fmt.Errorf("insertStudent %v: %v", student, err)
 	}
 	return nil
 }
@@ -75,7 +73,7 @@ func findStudentsByName(db *sql.DB, name string) ([]Student, error) {
 	// An students slice to hold data from returned rows.
 	var students []Student
 
-	rows, err := db.Query("SELECT * FROM Students WHERE name = ?", name)
+	rows, err := db.Query("SELECT id, name FROM Students WHERE name = ?", name)
 	if err != nil {
 		return nil, fmt.Errorf("findStudentsByName %q: %v", name, err)
 	}
@@ -83,7 +81,7 @@ func findStudentsByName(db *sql.DB, name string) ([]Student, error) {
 	// Loop through rows, using Scan to assign column data to struct fields.
 	for rows.Next() {
 		var student Student
-		if err := rows.Scan(&student.ID, &student.Name, &student.Nickname, &student.Score); err != nil {
+		if err := rows.Scan(&student.ID, &student.Name); err != nil {
 			return nil, fmt.Errorf("findStudentsByName %q: %v", name, err)
 		}
 		students = append(students, student)
