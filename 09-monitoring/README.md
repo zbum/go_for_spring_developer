@@ -7,10 +7,10 @@
 ### 라이브러리
 * go.mod 파일에 다음을 추가하여 library 를 설정합니다.
 * 스카우터가 제공하는 golang agent 가 더 이상 업데이트 되지 않고 있어 fork 를 생성하여 필요한 기능을 추가하였습니다.
-    * https://github.com/scouter-contrib/scouter-agent-golang
+    * https://github.com/zbum/scouter-agent-golang
 
 ```
-go get github.com/zbum/scouter-agent-golang@v0.20.0-beta.1
+go get github.com/zbum/scouter-agent-golang@v0.20.1-alpha.1
 ````
 
 ## 개발 가이드
