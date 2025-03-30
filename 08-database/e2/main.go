@@ -75,11 +75,11 @@ func querySingle(db *gorm.DB) {
 	// 아무 데이터나 1개 조회 (pk 로 정렬)
 	var selectedStudent model.Student
 	db.First(&selectedStudent)
-	fmt.Println("[3] SingleSelected Student : ", selectedStudent.ID, selectedStudent.Name)
+	fmt.Println("[3] SingleSelected Student : ", selectedStudent)
 
 	// 아무 데이터나 1개 조회 (정렬 없음)
 	db.Take(&selectedStudent)
-	fmt.Println("[3] SingleSelected Student : ", selectedStudent.ID, selectedStudent.Name)
+	fmt.Println("[3] SingleSelected Student : ", selectedStudent)
 
 	// 모든 데이터 삭제
 	deletedCount := crud.DeleteAll(db)
@@ -99,11 +99,35 @@ func queryByCondition(db *gorm.DB) {
 	// Manty2 인 데이터만 조회 (pk 로 정렬)
 	var selectedStudent model.Student
 	db.First(&selectedStudent, "Name = ?", "Manty2")
-	fmt.Println("[3] ConditionedSelected Student : ", selectedStudent.ID, selectedStudent.Name)
+	fmt.Println("[3] ConditionedSelected Student : ", selectedStudent)
 
 	// Manty2 인 데이터만 조회 (정렬 없음)
 	db.Take(&selectedStudent, "Name = ?", "Manty2")
-	fmt.Println("[3] ConditionedSelected Student : ", selectedStudent.ID, selectedStudent.Name)
+	fmt.Println("[3] ConditionedSelected Student : ", selectedStudent)
+
+	// 모든 데이터 삭제
+	deletedCount := crud.DeleteAll(db)
+	fmt.Println("[6] Deleted Count : ", deletedCount)
+}
+
+func queryMultipleByCondition(db *gorm.DB) {
+	fmt.Println("\n\n#### START queryByCondition ####")
+
+	// 생성
+	id, insertedCount := crud.Insert(db, &model.Student{Name: "Manty1"})
+	fmt.Println("[1] Inserted ID, Count : ", id, insertedCount)
+
+	id, insertedCount = crud.Insert(db, &model.Student{Name: "Manty2"})
+	fmt.Println("[2] Inserted ID, Count : ", id, insertedCount)
+
+	// Manty2 인 데이터만 조회 (pk 로 정렬)
+	var selectedStudent model.Student
+	db.First(&selectedStudent, "Name = ?", "Manty2")
+	fmt.Println("[3] ConditionedSelected Student : ", selectedStudent)
+
+	// Manty2 인 데이터만 조회 (정렬 없음)
+	db.Take(&selectedStudent, "Name = ?", "Manty2")
+	fmt.Println("[3] ConditionedSelected Student : ", selectedStudent)
 
 	// 모든 데이터 삭제
 	deletedCount := crud.DeleteAll(db)

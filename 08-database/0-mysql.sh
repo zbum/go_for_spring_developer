@@ -6,6 +6,7 @@ USER_ID=$(id -u)
 GROUP_ID=$(id -g)
 
 docker run -d \
+  --platform=linux/amd64 \
   --user "$USER_ID":"$GROUP_ID" \
   --name edu-mysql \
   -e MYSQL_ROOT_PASSWORD=test \
