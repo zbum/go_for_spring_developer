@@ -167,8 +167,6 @@ github.com/valyala/tcplisten v1.0.0 h1:rBHj/Xf+E1tRGZyWIWwJDiRY0zc1Js+CV5DqwacVS
 github.com/valyala/tcplisten v1.0.0/go.mod h1:T0xQ8SeCZGxckz9qRXTfG43PvQ/mcWh7FwZEA7Ioqkc=
 github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
-github.com/zbum/scouter-agent-golang v0.19.5 h1:xyEp1MunPzARUpub7n7CVfAN4+zE4pqGt8bMY9ytCdQ=
-github.com/zbum/scouter-agent-golang v0.19.5/go.mod h1:zjvqEWfJsNLLBZLo1Un/c4GtE5eGBdCM0JlqB3Sp/mg=
 github.com/zbum/scouter-agent-golang v0.20.0-beta.1 h1:3GjhCGSNe5kRucy1aqaFVLAfVTK0zmUF4tim8B4WRLc=
 github.com/zbum/scouter-agent-golang v0.20.0-beta.1/go.mod h1:vqFGC5SBAzbvjdBEdRGY/avq6KmKTpCh0GEDZGQ0Hjk=
 go.uber.org/atomic v1.9.0 h1:ECmE8Bn/WFTYwEW/bpKD3M8VtR/zQVbavAoalC1PYyE=
