@@ -2,6 +2,7 @@ package db
 
 import (
 	"go_for_spring_developer/08-database/01-common/model"
+	"go_for_spring_developer/08-database/01-common/model_with_gorm"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -46,7 +47,12 @@ func InitGorm() *gorm.DB {
 
 	// 테이블 자동 생성 + loglevel 조정
 	db.Logger.LogMode(logger.Silent)
-	err = db.AutoMigrate(&model.Student{}, &model.Score{})
+	err = db.AutoMigrate(
+		&model.Student{},
+		&model.Score{},
+		&model_with_gorm.StudentWithGormModel{},
+		&model_with_gorm.ScoreWithGormModel{},
+	)
 	//db.Logger.LogMode(logger.Info)
 	if err != nil {
 		panic(err)

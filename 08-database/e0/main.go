@@ -18,7 +18,11 @@ func main() {
 
 	db := initDatasource()
 
-	err := insertStudent(db, &Student{ID: 1, Name: "Manty"})
+	err := deleteAllStudents(db)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = insertStudent(db, &Student{ID: 1, Name: "Manty"})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -58,6 +62,14 @@ func initDatasource() *sql.DB {
 	db.SetConnMaxLifetime(1 * time.Hour) // connection의 재사용 가능 시간
 
 	return db
+}
+
+func deleteAllStudents(db *sql.DB) error {
+	_, err := db.Query("DELETE FROM Students")
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func insertStudent(db *sql.DB, student *Student) error {

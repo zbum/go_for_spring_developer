@@ -52,18 +52,6 @@ var result User
 db.Model(User{ID: 10}).First(&result)
 // SELECT * FROM users WHERE id = 10;
 ```
-* gorm에서 제공하는 gorm.DeletedAt를 사용한다면 조회 쿼리가 바뀝니다.
-```go
-type User struct {
-  ID           string `gorm:"primarykey;size:16"`
-  Name         string `gorm:"size:24"`
-  DeletedAt    gorm.DeletedAt `gorm:"index"`
-}
-
-var user = User{ID: 15}
-db.First(&user)
-//  SELECT * FROM `users` WHERE `users`.`id` = '15' AND `users`.`deleted_at` IS NULL ORDER BY `users`.`id` LIMIT 1
-```
 
 ### SELECT ALL
 ```go
@@ -75,7 +63,7 @@ result.RowsAffected // returns found records count, equals `len(users)`
 result.Error        // returns error
 ```
 
-### SELECT 조건
+### SELECT 조건 (queryByCondition)
 ```go
 // Get first matched record
 db.Where("name = ?", "zbum").First(&user)
@@ -132,7 +120,7 @@ db.Where(map[string]interface{}{"Name": "zbum", "Age": 0}).Find(&users)
 // SELECT * FROM users WHERE name = "zbum" AND age = 0;
 ```
 
-### 정렬
+### 정렬 (queryWithSort)
 ```go
 db.Order("age desc, name").Find(&users)
 // SELECT * FROM users ORDER BY age desc, name;
@@ -142,12 +130,16 @@ db.Order("age desc").Order("name").Find(&users)
 // SELECT * FROM users ORDER BY age desc, name;
 
 db.Clauses(clause.OrderBy{
-  Expression: clause.Expr{SQL: "FIELD(id,?)", Vars: []interface{}{[]int{1, 2, 3}}, WithoutParentheses: true},
-}).Find(&User{})
-// SELECT * FROM users ORDER BY FIELD(id,1,2,3)
+    Expression: clause.Expr{
+        SQL:                "?, ?",
+        Vars:               []interface{}{"name asc", "age"},
+        WithoutParentheses: true,
+    },
+}).Find(&selectedStudents)
+// SELECT * FROM `Students` ORDER BY 'name asc', 'age'
 ```
 
-### Limit, Offset
+### Limit, Offset (queryWithLimitAndOffset)
 ```go
 db.Limit(3).Find(&users)
 // SELECT * FROM users LIMIT 3;
@@ -169,7 +161,7 @@ db.Offset(10).Find(&users1).Offset(-1).Find(&users2)
 // SELECT * FROM users; (users2)
 ```
 
-### Join!!
+### Join!! 
 ```go
 type result struct {
   Name  string

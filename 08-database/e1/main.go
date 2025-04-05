@@ -3,20 +3,17 @@ package main
 import (
 	"context"
 	"fmt"
-	model2 "go_for_spring_developer/08-database/01-common/model"
-	"go_for_spring_developer/08-database/e1/crud"
+	"go_for_spring_developer/08-database/01-common/crud"
+	"go_for_spring_developer/08-database/01-common/db"
+	"go_for_spring_developer/08-database/01-common/model"
 	"go_for_spring_developer/08-database/e1/repository"
-	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
-	"log"
-	"os"
 	"time"
 )
 
 func main() {
 
-	db := initGorm()
+	db := db.InitGorm()
 	studentRepository := repository.NewStudentRepository()
 	studentRepositoryWithContext := repository.NewStudentRepositoryWithContext()
 	scoreRepository := repository.NewScoreRepository()
@@ -27,58 +24,15 @@ func main() {
 	runRepositoryWithTxAndContext(studentRepositoryWithContext, db)
 }
 
-func initGorm() *gorm.DB {
-	cfg := mysql.Config{
-		DSN: "root:test@tcp(localhost:3306)/test?charset=utf8&parseTime=True&loc=Local",
-	}
-	var err error
-
-	newLogger := logger.New(
-		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
-		logger.Config{
-			SlowThreshold:             time.Second, // Slow SQL threshold
-			LogLevel:                  logger.Info, // Log level
-			IgnoreRecordNotFoundError: true,        // Ignore ErrRecordNotFound error for logger
-			ParameterizedQueries:      true,        // Don't include params in the SQL log
-			Colorful:                  false,       // Disable color
-		},
-	)
-
-	db, err := gorm.Open(mysql.New(cfg), &gorm.Config{
-		Logger: newLogger,
-	})
-	if err != nil {
-		panic("Db 연결에 실패하였습니다.")
-	}
-
-	sqlDb, err := db.DB()
-	if err != nil {
-		panic(err)
-	}
-
-	sqlDb.SetMaxIdleConns(100)
-	sqlDb.SetMaxOpenConns(100)
-	sqlDb.SetConnMaxIdleTime(1 * time.Hour) // idle 상태로 유지되는 시간
-	sqlDb.SetConnMaxLifetime(1 * time.Hour) // connection의 재사용 가능 시간
-
-	// 테이블 자동 생성
-	err = db.AutoMigrate(&model2.Student{}, &model2.Score{})
-	if err != nil {
-		panic(err)
-	}
-
-	return db
-}
-
 func runCrud(db *gorm.DB) {
 	fmt.Println("#### START runCrud ####")
 	// 저장 (Insert or Update)
-	student := model2.Student{Name: "Manty0"}
+	student := model.Student{Name: "Manty0"}
 	saveId, savedCount := crud.Save(db, &student)
 	fmt.Println("[0] Inserted ID, Count : ", saveId, savedCount)
 
 	// 생성
-	id, insertedCount := crud.Insert(db, &model2.Student{Name: "Manty1"})
+	id, insertedCount := crud.Insert(db, &model.Student{Name: "Manty1"})
 	fmt.Println("[1] Inserted ID, Count : ", id, insertedCount)
 
 	selectedStudent := crud.FindById(db, id)
@@ -101,14 +55,14 @@ func runCrud(db *gorm.DB) {
 	fmt.Println("[5] Deleted ID, Count : ", id, deletedCount)
 
 	// 모든 데이터 삭제
-	deletedCount = crud.DeleteAll(db)
-	fmt.Println("[6] Deleted Count : ", deletedCount)
+	crud.DeleteAll(db)
+	fmt.Println("[6] Deleted All ")
 }
 
 func runRepository(repository *repository.StudentRepository, db *gorm.DB) error {
 	fmt.Println("#### START runRepository ####")
 	// 저장 (Insert or Update)
-	student := model2.Student{Name: "Manty0"}
+	student := model.Student{Name: "Manty0"}
 	if saveId, savedCount, err := repository.Save(db, &student); err != nil {
 		return err
 	} else {
@@ -117,7 +71,7 @@ func runRepository(repository *repository.StudentRepository, db *gorm.DB) error 
 
 	// 생성
 	var id uint
-	if id, insertedCount, err := repository.Insert(db, &model2.Student{Name: "Manty1"}); err != nil {
+	if id, insertedCount, err := repository.Insert(db, &model.Student{Name: "Manty1"}); err != nil {
 		return err
 	} else {
 		fmt.Println("[1] Inserted ID, Count : ", id, insertedCount)
@@ -174,14 +128,14 @@ func runRepositoryWithTx(repository *repository.StudentRepository, scoreReposito
 	db.Session(&gorm.Session{SkipDefaultTransaction: true})
 	db.Transaction(func(tx *gorm.DB) error {
 		// 저장 (Insert or Update)
-		student := model2.Student{Name: "Manty0"}
+		student := model.Student{Name: "Manty0"}
 		if saveId, savedCount, err := repository.Save(tx, &student); err != nil {
 			return err
 		} else {
 			fmt.Println("[0] Inserted ID, Count : ", saveId, savedCount)
 		}
 
-		score := model2.Score{Score: 99, StudentID: student.ID}
+		score := model.Score{Score: 99, StudentID: student.ID}
 		if saveId, savedCount, err := scoreRepository.Save(tx, &score); err != nil {
 			return err
 		} else {
@@ -190,7 +144,7 @@ func runRepositoryWithTx(repository *repository.StudentRepository, scoreReposito
 
 		// 생성
 		var studentId uint
-		if id, insertedCount, err := repository.Insert(tx, &model2.Student{Name: "Manty1"}); err != nil {
+		if id, insertedCount, err := repository.Insert(tx, &model.Student{Name: "Manty1"}); err != nil {
 			return err
 		} else {
 			studentId = id
@@ -253,7 +207,7 @@ func runRepositoryWithTxAndContext(repository *repository.StudentRepositoryWithC
 	db.Session(&gorm.Session{SkipDefaultTransaction: true})
 	db.Transaction(func(tx *gorm.DB) error {
 		// 저장 (Insert or Update)
-		student := model2.Student{Name: "Manty0"}
+		student := model.Student{Name: "Manty0"}
 		if saveId, savedCount, err := repository.Save(ctx, tx, &student); err != nil {
 			return err
 		} else {
@@ -262,7 +216,7 @@ func runRepositoryWithTxAndContext(repository *repository.StudentRepositoryWithC
 
 		// 생성
 		var studentId uint
-		if id, insertedCount, err := repository.Insert(ctx, tx, &model2.Student{Name: "Manty1"}); err != nil {
+		if id, insertedCount, err := repository.Insert(ctx, tx, &model.Student{Name: "Manty1"}); err != nil {
 			return err
 		} else {
 			studentId = id

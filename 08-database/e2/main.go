@@ -6,6 +6,7 @@ import (
 	"go_for_spring_developer/08-database/01-common/db"
 	"go_for_spring_developer/08-database/01-common/model"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"
 	"strconv"
 )
@@ -15,21 +16,71 @@ func main() {
 	querySingle(db)
 	queryByPrimaryKey(db)
 	queryByCondition(db)
-	queryMultipleByCondition(db)
+	queryWithSort(db)
+	queryWithLimitAndOffset(db)
+}
+
+func insertSampleData(db *gorm.DB) []uint {
+	// loglevel 을 잠시 낮춥니다.
+	db.Logger.LogMode(logger.Silent)
+
+	var ids []uint
+
+	// 생성
+	id, _ := crud.Insert(db, &model.Student{Name: "Manty1", Age: 15})
+	ids = append(ids, id)
+
+	id, _ = crud.Insert(db, &model.Student{Name: "Manty2", Age: 14})
+	ids = append(ids, id)
+
+	id, _ = crud.Insert(db, &model.Student{Name: "Manty3", Age: 13})
+	ids = append(ids, id)
+
+	id, _ = crud.Insert(db, &model.Student{Name: "Manty4", Age: 12})
+	ids = append(ids, id)
+
+	id, _ = crud.Insert(db, &model.Student{Name: "Manty5", Age: 11})
+	ids = append(ids, id)
+
+	id, _ = crud.Insert(db, &model.Student{Name: "Manty6", Age: 10})
+	ids = append(ids, id)
+
+	id, _ = crud.Insert(db, &model.Student{Name: "Manty7", Age: 9})
+	ids = append(ids, id)
+
+	id, _ = crud.Insert(db, &model.Student{Name: "Manty8", Age: 8})
+	ids = append(ids, id)
+
+	id, _ = crud.Insert(db, &model.Student{Name: "Manty9", Age: 7})
+	ids = append(ids, id)
+
+	id, _ = crud.Insert(db, &model.Student{Name: "Manty10", Age: 6})
+	ids = append(ids, id)
+	fmt.Println("[1] Inserted IDs, Count : ", ids, len(ids))
+
+	// loglevel 복구
+	db.Logger.LogMode(logger.Info)
+
+	return ids
+}
+
+func deleteSampleData(db *gorm.DB) {
+	// loglevel 을 잠시 낮춥니다.
+	db.Logger.LogMode(logger.Silent)
+
+	// 모든 테스트 데이터 삭제
+	crud.DeleteAll(db)
+	fmt.Println("[6] Deleted All")
+
+	// loglevel 복구
+	db.Logger.LogMode(logger.Info)
 }
 
 func querySingle(db *gorm.DB) {
 
 	fmt.Println("\n\n#### START querySingle ####")
-	// loglevel 을 잠시 낮춥니다.
-	db.Logger.LogMode(logger.Silent)
 
-	// 테스트 데이터 입력
-	id, insertedCount := crud.Insert(db, &model.Student{Name: "Manty1"})
-	fmt.Println("[1] Inserted ID, Count : ", id, insertedCount)
-
-	id, insertedCount = crud.Insert(db, &model.Student{Name: "Manty2"})
-	fmt.Println("[2] Inserted ID, Count : ", id, insertedCount)
+	insertSampleData(db)
 
 	// pk 로 정렬한 첫번째 데이터 조회
 	var selectedStudent model.Student
@@ -41,36 +92,24 @@ func querySingle(db *gorm.DB) {
 	db.Take(&selectedStudent)
 	fmt.Println("[3] SingleSelected Student : ", selectedStudent)
 
-	// 모든 테스트 데이터 삭제
-	deletedCount := crud.DeleteAll(db)
-	fmt.Println("[6] Deleted Count : ", deletedCount)
-
-	// loglevel 복구
-	db.Logger.LogMode(logger.Info)
+	deleteSampleData(db)
 }
 
 func queryByPrimaryKey(db *gorm.DB) {
 	fmt.Println("\n\n#### START queryByPrimaryKey ####")
 
-	var ids []uint
-
-	// 생성
-	id, _ := crud.Insert(db, &model.Student{Name: "Manty1"})
-	ids = append(ids, id)
-
-	id, _ = crud.Insert(db, &model.Student{Name: "Manty2"})
-	ids = append(ids, id)
-	fmt.Println("[1] Inserted IDs, Count : ", ids, len(ids))
+	var ids = insertSampleData(db)
 
 	// 마지막 insert한 데이터만 조회
 	var selectedStudent model.Student
-	db.First(&selectedStudent, id)
+	lastId := ids[len(ids)-1]
+	db.First(&selectedStudent, lastId)
 	fmt.Println("[2] PrimaryKey Selected Student : ", selectedStudent)
 
 	// 마지막 insert한 데이터만 조회
 	// 문자열로 조회해도 동작합니다.
 	var selectedStudentByString model.Student
-	db.Take(&selectedStudentByString, strconv.FormatUint(uint64(id), 10))
+	db.Take(&selectedStudentByString, strconv.FormatUint(uint64(lastId), 10))
 	fmt.Println("[3] PrimaryKey Selected Student : ", selectedStudentByString)
 
 	// IN 조건으로 조회
@@ -84,59 +123,95 @@ func queryByPrimaryKey(db *gorm.DB) {
 	db.First(&selectedStudentWithPk)
 	fmt.Println("[5] 목적지 변수를 활용 : ", selectedStudentWithPk)
 
-	// 모든 데이터 삭제
-	deletedCount := crud.DeleteAll(db)
-	fmt.Println("[5] Deleted Count : ", deletedCount)
+	deleteSampleData(db)
 }
 
 func queryByCondition(db *gorm.DB) {
 	fmt.Println("\n\n#### START queryByCondition ####")
 
-	// 생성
-	id, insertedCount := crud.Insert(db, &model.Student{Name: "Manty1"})
-	fmt.Println("[1] Inserted ID, Count : ", id, insertedCount)
+	ids := insertSampleData(db)
 
-	id, insertedCount = crud.Insert(db, &model.Student{Name: "Manty2"})
-	fmt.Println("[2] Inserted ID, Count : ", id, insertedCount)
+	// Manty2 인 데이터만 조회
+	var selectedStudents []model.Student
+	db.Where("name = ?", "Manty2").Find(&selectedStudents)
+	fmt.Println("[1] ConditionedSelected Student : ", selectedStudents)
 
-	// Manty2 인 데이터만 조회 (pk 로 정렬)
-	var selectedStudent model.Student
-	db.First(&selectedStudent, "Name = ?", "Manty2")
-	fmt.Println("[3] ConditionedSelected Student : ", selectedStudent)
+	// Manty2 가 아닌 데이터만 조회
+	db.Where("name <> ?", "Manty2").Find(&selectedStudents)
+	fmt.Println("[2] ConditionedSelected Student : ", selectedStudents)
 
-	// Manty2 인 데이터만 조회 (정렬 없음)
-	db.Take(&selectedStudent, "Name = ?", "Manty2")
-	fmt.Println("[3] ConditionedSelected Student : ", selectedStudent)
+	// Manty1 과 Manty2 를 IN 절로 조회
+	db.Where("name IN ?", []string{"Manty1", "Manty2"}).Find(&selectedStudents)
+	fmt.Println("[3] ConditionedSelected Student : ", selectedStudents)
 
-	// 모든 데이터 삭제
-	deletedCount := crud.DeleteAll(db)
-	fmt.Println("[6] Deleted Count : ", deletedCount)
+	// LIKE 사용
+	db.Where("name LIKE ?", "Man%").Find(&selectedStudents)
+	fmt.Println("[4] ConditionedSelected Student : ", selectedStudents)
+
+	// AND 사용
+	db.Where("name = ? AND age = ?", "Manty1", 15).Find(&selectedStudents)
+	fmt.Println("[5] ConditionedSelected Student : ", selectedStudents)
+
+	// 구조체 사용
+	db.Where(&model.Student{Name: "Manty2", Age: 14}).Find(&selectedStudents)
+	fmt.Println("[5] Struct ConditionedSelected Student : ", selectedStudents)
+
+	// Map 사용
+	mapCondition := map[string]interface{}{"name": "Manty1"}
+	db.Where(mapCondition).Find(&selectedStudents)
+	fmt.Println("[6] Map ConditionedSelected Student : ", selectedStudents)
+
+	// Slice 사용
+	db.Where(ids).Find(&selectedStudents)
+	fmt.Println("[6] Slice ConditionedSelected Student : ", selectedStudents)
+
+	deleteSampleData(db)
 }
 
-func queryMultipleByCondition(db *gorm.DB) {
-	fmt.Println("\n\n#### START queryMultipleByCondition ####")
+func queryWithSort(db *gorm.DB) {
+	fmt.Println("\n\n#### START queryWithSort ####")
 
-	// 생성 (Manty1, Manty2)
-	id, insertedCount := crud.Insert(db, &model.Student{Name: "Manty1"})
-	fmt.Println("[1] Inserted ID, Count : ", id, insertedCount)
+	insertSampleData(db)
 
-	id, insertedCount = crud.Insert(db, &model.Student{Name: "Manty2"})
-	fmt.Println("[2] Inserted ID, Count : ", id, insertedCount)
-
-	// 전체 데이터 조회
+	// Manty2 인 데이터만 조회
 	var selectedStudents []model.Student
-	db.Find(&selectedStudents)
-	fmt.Printf("[3] SelectAll Student : \n%v", selectedStudents)
+	db.Order("name asc, age desc").Where("age > ?", 10).Find(&selectedStudents)
+	fmt.Println("[1] ConditionedSortedSelected Student : \n", selectedStudents)
 
-	// 전체 데이터 조회(PK로 정렬)
-	db.Order("id").Find(&selectedStudents)
-	fmt.Printf("[4] SelectAll Student : \n%v", selectedStudents)
+	// Manty2 가 아닌 데이터만 조회
+	db.Order("name asc").Order("age desc").Find(&selectedStudents)
+	fmt.Println("[2] SortedSelected Student : \n", selectedStudents)
 
-	// 전체 데이터 조회(PK로 역정렬(내림차순))
-	db.Order("id desc").Find(&selectedStudents)
-	fmt.Printf("[5] SelectAll Student : \n%v", selectedStudents)
+	// sort 할 컬럼을 동적으로 바꿔야 할때.
+	db.Clauses(clause.OrderBy{
+		Expression: clause.Expr{
+			SQL:                "?, ?",
+			Vars:               []interface{}{"name asc", "age"},
+			WithoutParentheses: true,
+		},
+	}).Find(&selectedStudents)
+	fmt.Println("[3] SortedSelected Student : \n", selectedStudents)
 
-	// 모든 데이터 삭제
-	deletedCount := crud.DeleteAll(db)
-	fmt.Println("[6] Deleted Count : ", deletedCount)
+	deleteSampleData(db)
+}
+
+func queryWithLimitAndOffset(db *gorm.DB) {
+	fmt.Println("\n\n#### START queryWithLimitAndOffset ####")
+
+	insertSampleData(db)
+
+	// 3개 데이터만 조회
+	var selectedStudents []model.Student
+	db.Order("name asc, age desc").Where("age > ?", 10).Limit(3).Find(&selectedStudents)
+	fmt.Println("[1] ConditionedSortedLimitedSelected Student : \n", selectedStudents)
+
+	// Limit 를 취소할때.
+	db.Limit(3).Order("name asc").Order("age desc").Limit(-1).Find(&selectedStudents)
+	fmt.Println("[2] ConditionedSortedLimitedSelected Student : \n", selectedStudents)
+
+	// Limit 와 offset 을 함께 사용
+	db.Limit(3).Offset(5).Order("name asc").Order("age desc").Find(&selectedStudents)
+	fmt.Println("[3] ConditionedSortedLimitedSelected Student : \n", selectedStudents)
+
+	deleteSampleData(db)
 }

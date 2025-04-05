@@ -16,6 +16,6 @@ docker run -d \
 
 
 ## connect
-## mysql -h 127.0.0.1 -u root -p -P3306
+## docker exec -it edu-mysql mysql -u root -p -P3306
 ##  delete from Scores;
 ##  delete from Students;

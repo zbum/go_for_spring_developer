@@ -2,12 +2,12 @@ package model
 
 import (
 	"fmt"
-	"gorm.io/gorm"
 )
 
 type Student struct {
-	gorm.Model
+	ID     uint `gorm:"primarykey"`
 	Name   string
+	Age    uint
 	Scores []Score
 }
 
@@ -16,5 +16,5 @@ func (Student) TableName() string {
 }
 
 func (s Student) String() string {
-	return fmt.Sprintf("ID: %d, Name: %s, DeletedAt: %v, Scores: %v \n", s.ID, s.Name, s.DeletedAt, s.Scores)
+	return fmt.Sprintf("ID: %d, Name: %s, Age: %v, Scores: %v \n", s.ID, s.Name, s.Age, s.Scores)
 }
