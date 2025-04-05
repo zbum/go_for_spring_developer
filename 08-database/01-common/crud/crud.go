@@ -2,7 +2,7 @@ package crud
 
 import (
 	"fmt"
-	"go_for_spring_developer/08-database/e2/model"
+	"go_for_spring_developer/08-database/01-common/model"
 	"gorm.io/gorm"
 )
 

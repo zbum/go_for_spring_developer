@@ -1,5 +1,5 @@
-## Gorm 의 복잡한 사용
-### SELECT
+## Gorm 으로 데이터 조회
+### SELECT (querySingle)
 * 단건 조회를 위해 First, Take, Last 메소드를 사용할 수 있습니다.
 * 이 메서드는 쿼리문에 LIMIT 1 구문을 추가하고, 만일 해당하는 레코드가 없을 경우 ErrRecordNotFound 에러를 반환합니다.
 ```go
@@ -15,14 +15,14 @@ db.Take(&user)
 db.Last(&user)
 // SELECT * FROM users ORDER BY id DESC LIMIT 1;
 
-result := db.First(&user)
-result.RowsAffected // 찾아낸 레코드의 개수
-result.Error        // error이나 nil
+tx := db.First(&user)
+tx.RowsAffected // 찾아낸 레코드의 개수
+tx.Error        // error이나 nil
 
 // ErrRecordNotFound 를 체크하는 방법
 errors.Is(result.Error, gorm.ErrRecordNotFound)
 ```
-### SELECT By Primary Key
+### SELECT By Primary Key (queryByPrimaryKey)
 * primary Key가 숫자인 경우, 인라인 조건을 사용하면 기본 키를 사용하여 개체를 검색할 수 있습니다.
 * 문자열 작업 시 SQL 주입을 방지하려면 각별한 주의가 필요합니다.
 ```go
