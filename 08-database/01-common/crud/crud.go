@@ -86,7 +86,7 @@ func DeleteById(db *gorm.DB, id uint) int64 {
 
 func DeleteAll(db *gorm.DB) {
 	db.Transaction(func(tx *gorm.DB) error {
-		
+
 		tx.Where("1 = 1").Delete(&model.Score{})
 		if tx.Error != nil {
 			fmt.Println(db.Error)

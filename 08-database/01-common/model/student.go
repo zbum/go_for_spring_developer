@@ -8,7 +8,7 @@ type Student struct {
 	ID     uint `gorm:"primarykey"`
 	Name   string
 	Age    uint
-	Scores []Score
+	Scores []Score `gorm:"foreignKey:StudentID;references:ID"`
 }
 
 func (Student) TableName() string {

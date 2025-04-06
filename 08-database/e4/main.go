@@ -12,6 +12,7 @@ import (
 func main() {
 	db := db.InitGorm()
 	queryWithJoin(db)
+	queryWithUserSpecifiedJoinCondition(db)
 }
 
 func insertSampleData(db *gorm.DB) []uint {
@@ -21,42 +22,95 @@ func insertSampleData(db *gorm.DB) []uint {
 	var ids []uint
 
 	// 생성
-	id, _ := crud.Insert(db, &model.Student{
-		Name: "Manty1",
-		Age:  15,
-		Scores: []model.Score{
-			{Score: 10},
-			{Score: 11},
+	students := []*model.Student{
+		{
+			Name: "Manty01",
+			Age:  14,
+			Scores: []model.Score{
+				{Score: 10},
+				{Score: 11},
+			},
 		},
-	})
-	ids = append(ids, id)
+		{
+			Name: "Manty02",
+			Age:  15,
+			Scores: []model.Score{
+				{Score: 10},
+				{Score: 11},
+			},
+		},
+		{
+			Name: "Manty03",
+			Age:  14,
+			Scores: []model.Score{
+				{Score: 10},
+				{Score: 11},
+			},
+		},
+		{
+			Name: "Manty04",
+			Age:  15,
+			Scores: []model.Score{
+				{Score: 10},
+				{Score: 11},
+			},
+		},
+		{
+			Name: "Manty05",
+			Age:  13,
+			Scores: []model.Score{
+				{Score: 10},
+				{Score: 11},
+			},
+		},
+		{
+			Name: "Manty06",
+			Age:  15,
+			Scores: []model.Score{
+				{Score: 10},
+				{Score: 11},
+			},
+		},
+		{
+			Name: "Manty07",
+			Age:  14,
+			Scores: []model.Score{
+				{Score: 10},
+				{Score: 11},
+			},
+		},
+		{
+			Name: "Manty08",
+			Age:  15,
+			Scores: []model.Score{
+				{Score: 10},
+				{Score: 11},
+			},
+		},
+		{
+			Name: "Manty09",
+			Age:  16,
+			Scores: []model.Score{
+				{Score: 10},
+				{Score: 11},
+			},
+		},
+		{
+			Name: "Manty10",
+			Age:  15,
+			Scores: []model.Score{
+				{Score: 10},
+				{Score: 11},
+			},
+		},
+	}
 
-	id, _ = crud.Insert(db, &model.Student{Name: "Manty2", Age: 14})
-	ids = append(ids, id)
+	crud.Inserts(db, students)
 
-	id, _ = crud.Insert(db, &model.Student{Name: "Manty3", Age: 13})
-	ids = append(ids, id)
+	for _, student := range students {
+		ids = append(ids, student.ID)
+	}
 
-	id, _ = crud.Insert(db, &model.Student{Name: "Manty4", Age: 12})
-	ids = append(ids, id)
-
-	id, _ = crud.Insert(db, &model.Student{Name: "Manty5", Age: 11})
-	ids = append(ids, id)
-
-	id, _ = crud.Insert(db, &model.Student{Name: "Manty6", Age: 10})
-	ids = append(ids, id)
-
-	id, _ = crud.Insert(db, &model.Student{Name: "Manty7", Age: 9})
-	ids = append(ids, id)
-
-	id, _ = crud.Insert(db, &model.Student{Name: "Manty8", Age: 8})
-	ids = append(ids, id)
-
-	id, _ = crud.Insert(db, &model.Student{Name: "Manty9", Age: 7})
-	ids = append(ids, id)
-
-	id, _ = crud.Insert(db, &model.Student{Name: "Manty10", Age: 6})
-	ids = append(ids, id)
 	fmt.Println("[1] Inserted IDs, Count : ", ids, len(ids))
 
 	// loglevel 복구
@@ -86,17 +140,36 @@ func queryWithJoin(db *gorm.DB) {
 	var selectedStudents []model.Student
 	db.Model(&model.Student{}).
 		Preload("Scores").
-		Where("name = ?", "Manty1").
+		Where("age = ?", 15).
 		Find(&selectedStudents)
 	fmt.Println("[1] Eager Loaded Student : \n", selectedStudents)
 
-	// Limit 를 취소할때.
-	db.Limit(3).Order("name asc").Order("age desc").Limit(-1).Find(&selectedStudents)
-	fmt.Println("[2] ConditionedSortedLimitedSelected Student : \n", selectedStudents)
+	deleteSampleData(db)
+}
 
-	// Limit 와 offset 을 함께 사용
-	db.Limit(3).Offset(5).Order("name asc").Order("age desc").Find(&selectedStudents)
-	fmt.Println("[3] ConditionedSortedLimitedSelected Student : \n", selectedStudents)
+type ResultOfStudentWithScores struct {
+	Score uint
+	Id    uint
+	Name  string
+	Age   uint
+}
+
+func (r ResultOfStudentWithScores) String() string {
+	return fmt.Sprintf("ID: %d, Name: %s, Age: %v, Score: %v \n", r.Id, r.Name, r.Age, r.Score)
+}
+
+func queryWithUserSpecifiedJoinCondition(db *gorm.DB) {
+	fmt.Println("\n\n#### START queryWithUserSpecifiedJoinCondition ####")
+
+	insertSampleData(db)
+
+	var resultOfStudentWithScores []ResultOfStudentWithScores
+	db.Model(&model.Score{}).
+		Select("Students.id, Students.age, Scores.score").
+		Joins("left join Students on Scores.student_id = Students.id").
+		Where("Students.age = ?", 15).
+		Scan(&resultOfStudentWithScores)
+	fmt.Println("[2] User Specified Join Students : \n", resultOfStudentWithScores)
 
 	deleteSampleData(db)
 }

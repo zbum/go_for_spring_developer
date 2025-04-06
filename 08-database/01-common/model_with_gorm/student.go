@@ -23,6 +23,7 @@ func (s StudentWithDeletedAt) String() string {
 type StudentWithGormModel struct {
 	gorm.Model
 	Name   string
+	Age    uint
 	Scores []ScoreWithGormModel `gorm:"foreignKey:StudentID;references:ID"`
 }
 
@@ -31,5 +32,5 @@ func (StudentWithGormModel) TableName() string {
 }
 
 func (s StudentWithGormModel) String() string {
-	return fmt.Sprintf("ID: %d, Name: %s, DeletedAt: %v, Scores: %v \n", s.ID, s.Name, s.DeletedAt, s.Scores)
+	return fmt.Sprintf("ID: %d, Name: %s, Age: %d, DeletedAt: %v, Scores: %v \n", s.ID, s.Name, s.Age, s.DeletedAt, s.Scores)
 }
