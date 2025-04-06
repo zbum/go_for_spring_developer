@@ -33,6 +33,15 @@ SELECT * FROM `Scores` WHERE `Scores`.`student_id` IN (272,274,276,278,280);
 ```
 
 ## Join 조건을 지정
+* HasMany 관계에서 Join 을 사용하여 데이터를 조회할 수 있습니다.
+* 결과 구조체 구성
+```go
+    var resultOfStudentWithScores []struct {
+        ID   uint
+        Age  uint
+        Score uint
+    }
+```    
 ```go
 	db.Model(&model.Score{}).
 		Select("Students.id, Students.age, Scores.score").
@@ -42,7 +51,9 @@ SELECT * FROM `Scores` WHERE `Scores`.`student_id` IN (272,274,276,278,280);
 ```
 * Join 을 했을때 호출되는 SQL
 ```sql
-SELECT Students.id, Students.age, Scores.score FROM `Scores` left join Students on Scores.student_id = Students.id WHERE Students.age = 15;
+SELECT Students.id, Students.age, Scores.score 
+  FROM `Scores` left join Students on Scores.student_id = Students.id 
+  WHERE Students.age = 15;
 ```
 
 

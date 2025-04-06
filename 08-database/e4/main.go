@@ -148,10 +148,10 @@ func queryWithJoin(db *gorm.DB) {
 }
 
 type ResultOfStudentWithScores struct {
-	Score uint
 	Id    uint
 	Name  string
 	Age   uint
+	Score uint
 }
 
 func (r ResultOfStudentWithScores) String() string {
