@@ -147,6 +147,8 @@ func queryWithJoin(db *gorm.DB) {
 	deleteSampleData(db)
 }
 
+// ## Join 조건을 지정
+
 type ResultOfStudentWithScores struct {
 	Id    uint
 	Name  string

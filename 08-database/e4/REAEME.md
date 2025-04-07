@@ -32,7 +32,7 @@ SELECT * FROM `Students` WHERE age = 15;
 SELECT * FROM `Scores` WHERE `Scores`.`student_id` IN (272,274,276,278,280);
 ```
 
-## Join 조건을 지정
+## Join 조건을 지정 (queryWithUserSpecifiedJoinCondition)
 * HasMany 관계에서 Join 을 사용하여 데이터를 조회할 수 있습니다.
 * 결과 구조체 구성
 ```go
