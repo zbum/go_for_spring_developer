@@ -6,6 +6,7 @@ USER_ID=$(id -u)
 GROUP_ID=$(id -g)
 
 docker run -d \
+  --platform=linux/amd64 \
   --user "$USER_ID":"$GROUP_ID" \
   --name edu-mysql \
   -e MYSQL_ROOT_PASSWORD=test \
@@ -15,6 +16,6 @@ docker run -d \
 
 
 ## connect
-## mysql -h 127.0.0.1 -u root -p -P3306
+## docker exec -it edu-mysql mysql -u root -p -P3306
 ##  delete from Scores;
 ##  delete from Students;

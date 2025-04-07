@@ -2,7 +2,8 @@ package crud
 
 import (
 	"fmt"
-	"go_for_spring_developer/08-database/e1/model"
+	"go_for_spring_developer/08-database/01-common/model"
+	"go_for_spring_developer/08-database/01-common/model_with_gorm"
 	"gorm.io/gorm"
 )
 
@@ -15,6 +16,14 @@ func Save(db *gorm.DB, student *model.Student) (id uint, rowsAffected int64) {
 }
 
 func Insert(db *gorm.DB, student *model.Student) (id uint, rowsAffected int64) {
+	tx := db.Create(student)
+	if tx.Error != nil {
+		fmt.Println(db.Error)
+	}
+	return student.ID, tx.RowsAffected
+}
+
+func InsertWithGormModel(db *gorm.DB, student *model_with_gorm.StudentWithGormModel) (id uint, rowsAffected int64) {
 	tx := db.Create(student)
 	if tx.Error != nil {
 		fmt.Println(db.Error)
@@ -75,11 +84,33 @@ func DeleteById(db *gorm.DB, id uint) int64 {
 	return tx.RowsAffected
 }
 
-func DeleteAll(db *gorm.DB) int64 {
-	tx := db.Where("1 = 1").Delete(&model.Student{})
-	if tx.Error != nil {
-		fmt.Println(db.Error)
-		return 0
-	}
-	return tx.RowsAffected
+func DeleteAll(db *gorm.DB) {
+	db.Transaction(func(tx *gorm.DB) error {
+
+		tx.Where("1 = 1").Delete(&model.Score{})
+		if tx.Error != nil {
+			fmt.Println(db.Error)
+			return tx.Error
+		}
+
+		tx.Where("1 = 1").Delete(&model.Student{})
+		if tx.Error != nil {
+			fmt.Println(db.Error)
+			return tx.Error
+		}
+
+		tx.Where("1 = 1").Delete(&model_with_gorm.ScoreWithGormModel{})
+		if tx.Error != nil {
+			fmt.Println(db.Error)
+			return tx.Error
+		}
+
+		tx.Where("1 = 1").Delete(&model_with_gorm.StudentWithGormModel{})
+		if tx.Error != nil {
+			fmt.Println(db.Error)
+			return tx.Error
+		}
+		return nil
+	})
+
 }

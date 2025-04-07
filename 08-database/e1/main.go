@@ -3,20 +3,17 @@ package main
 import (
 	"context"
 	"fmt"
-	"go_for_spring_developer/08-database/e1/crud"
-	"go_for_spring_developer/08-database/e1/model"
+	"go_for_spring_developer/08-database/01-common/crud"
+	"go_for_spring_developer/08-database/01-common/db"
+	"go_for_spring_developer/08-database/01-common/model"
 	"go_for_spring_developer/08-database/e1/repository"
-	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
-	"log"
-	"os"
 	"time"
 )
 
 func main() {
 
-	db := initGorm()
+	db := db.InitGorm()
 	studentRepository := repository.NewStudentRepository()
 	studentRepositoryWithContext := repository.NewStudentRepositoryWithContext()
 	scoreRepository := repository.NewScoreRepository()
@@ -25,49 +22,6 @@ func main() {
 	_ = runRepository(studentRepository, db)
 	runRepositoryWithTx(studentRepository, scoreRepository, db)
 	runRepositoryWithTxAndContext(studentRepositoryWithContext, db)
-}
-
-func initGorm() *gorm.DB {
-	cfg := mysql.Config{
-		DSN: "root:test@tcp(localhost:3306)/test?charset=utf8&parseTime=True&loc=Local",
-	}
-	var err error
-
-	newLogger := logger.New(
-		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
-		logger.Config{
-			SlowThreshold:             time.Second, // Slow SQL threshold
-			LogLevel:                  logger.Info, // Log level
-			IgnoreRecordNotFoundError: true,        // Ignore ErrRecordNotFound error for logger
-			ParameterizedQueries:      true,        // Don't include params in the SQL log
-			Colorful:                  false,       // Disable color
-		},
-	)
-
-	db, err := gorm.Open(mysql.New(cfg), &gorm.Config{
-		Logger: newLogger,
-	})
-	if err != nil {
-		panic("Db 연결에 실패하였습니다.")
-	}
-
-	sqlDb, err := db.DB()
-	if err != nil {
-		panic(err)
-	}
-
-	sqlDb.SetMaxIdleConns(100)
-	sqlDb.SetMaxOpenConns(100)
-	sqlDb.SetConnMaxIdleTime(1 * time.Hour) // idle 상태로 유지되는 시간
-	sqlDb.SetConnMaxLifetime(1 * time.Hour) // connection의 재사용 가능 시간
-
-	// 테이블 자동 생성
-	err = db.AutoMigrate(&model.Student{}, &model.Score{})
-	if err != nil {
-		panic(err)
-	}
-
-	return db
 }
 
 func runCrud(db *gorm.DB) {
@@ -101,8 +55,8 @@ func runCrud(db *gorm.DB) {
 	fmt.Println("[5] Deleted ID, Count : ", id, deletedCount)
 
 	// 모든 데이터 삭제
-	deletedCount = crud.DeleteAll(db)
-	fmt.Println("[6] Deleted Count : ", deletedCount)
+	crud.DeleteAll(db)
+	fmt.Println("[6] Deleted All ")
 }
 
 func runRepository(repository *repository.StudentRepository, db *gorm.DB) error {
