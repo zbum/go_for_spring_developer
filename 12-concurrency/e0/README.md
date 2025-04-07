@@ -36,9 +36,19 @@ ci := make(chan int) //unbuffered channel
 cj := make(chan int, 0) //unbuffered channel
 cs := make(chan *os.File, 100) //buffered channel
 ```
-* unbuffered channel은 수신자가 준비될 때까지 발신자가 대기하는 동기화가 필요할때 사용합니다. 
-* buffered channel은 수신자가 준비되지 않아도 발신자가 대기하지 않고 계속 진행할 수 있습니다.
+### unbuffered channel
+* make(chan int)로 생성
+* 송신자와 수신자가 동시에 준비되어 있어야 함
+* 송신 시 수신자가 없으면 송신 고루틴이 블록됨
+* 동기화(synchronize) 에 유용
 
+### buffered channel
+* make(chan int, capacity)로 생성 (capacity는 버퍼 크기)
+* 버퍼 크기만큼 값을 저장 가능
+* 버퍼가 가득 차기 전까지는 송신이 블록되지 않음
+* 비동기 통신에 유용
+
+### 채널 데이터 전송
 * 채널에 데이터를 전송할 때는 `<-` 연산자를 사용합니다.
 ```go
 ci <- 1
@@ -48,7 +58,7 @@ ci <- 1
 value := <-ci
 ```
 
-* 채널 실습 (e0)
+### 채널 예제 (e0)
 ```go
 package main
 
