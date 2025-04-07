@@ -21,6 +21,12 @@
     * 이건 Micro Services 아키텍쳐에서 중요한 부분
     * java 시스템 사용량예시 (CPU 보다 메모리 점유율이 너무 높아 비용 상승)
     * https://programming-language-benchmarks.vercel.app/
+* 성능
+  * 대부분의 Java 플랫폼 보다 빠른 성능(latency)
+  * https://www.techempower.com/benchmarks/#hw=ph&test=fortune&section=data-r23&l=zijo8v-cn3&f=ziig3j-zik0zj-zik0zj-zijzen-zik0xr-zik0zj-qmx0qn-zh5gin-zijocf-zik0zj-zik0zj-ytl1j3-zik0zj-zik0zi-zik0zj-3j
+  ![img.png](img.png)
+* 성능과 메모리 사용량 비교
+  * https://youtu.be/8CiErLxdaA8?si=hGcrbaLgeMQwFNPP
 
 ## Go 언어에서 Software Engineering 이란?
 * 많은 사람들이 많은 시간을 들여 작업하는 대규모 프로그래밍에 관한 것.
