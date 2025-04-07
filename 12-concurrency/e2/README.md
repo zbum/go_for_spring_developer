@@ -19,8 +19,6 @@ c <- 1
 value = <-c
 ```
 ## channel 을 이용한 통신
-* c 변수에 담긴 Channel 이 main 과 boring 고루틴을 연결하고 있어 커뮤니케이션 할 수 있게 되었습니다.
-
 ```go
 func main() {
 	c := make(chan string)
@@ -39,6 +37,7 @@ func boring(msg string, c chan string) {
 }
 
 ```
+* c 변수에 담긴 Channel 이 main 과 boring 고루틴을 연결하고 있어 커뮤니케이션 할 수 있게 되었습니다.
 
 ## 동기화(Synchronization)
 * 위 코드의 main 함수에서 <-c 를 호출하면 메시지가 수신될때까지 블로킹 됩니다. 
