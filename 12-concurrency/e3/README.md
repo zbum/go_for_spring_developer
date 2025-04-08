@@ -52,7 +52,7 @@ Ann 4
 You're both boring; I'm leaving.
 
 ```
-* 이경우 fanin 함수를 하용하여 먼저 처리된 결과를 먼저 받게 할 수 있습니다.
+* 이경우 fanin 함수를 사용하여 먼저 처리된 결과를 먼저 받게 할 수 있습니다.
 ```go
 func main() {
     c := fanIn(boring("Joe"), boring("Ann"))
