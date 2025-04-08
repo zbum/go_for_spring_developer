@@ -4,15 +4,14 @@
 
 ## goroutine
 * Go 언어의 고루틴은 경량 스레드입니다.
-* 고루틴으로 실행하면 자체 콜 스택이 생성됩니다.
 * 쓰레드보다 매우 가벼우며 실무적으로 몇 천개 이상 동작해도 문제가 없습니다.
-
+* 고루틴으로 실행하면 자체 콜 스택이 생성됩니다.
 * 함수나 메서드 호출 앞에 `go` 키워드를 붙이면 고루틴으로 실행됩니다.
 ```go
   go list.Sort()
 ```
 
-* func 으로 고루틴을 편리하게 사용할 수 있습니다. 
+* 익명함수(func)으로 고루틴을 편리하게 사용할 수 있습니다. 
 ```go
 func Announce(message string, delay time.Duration) {
     go func() {
@@ -26,6 +25,7 @@ func Announce(message string, delay time.Duration) {
 * Go 언어는 쓰레드간에 공유 메모리를 사용하지 않고 채널(channel)을 통해 데이터를 전송하는 것을 권장합니다.
 
 > Do not communicate by sharing memory; instead, share memory by communicating.
+> 
 > 공유메모리로 통신하지 말고, 통신으로 공유메모리를 사용하라.
 >
 > - Rob Pike

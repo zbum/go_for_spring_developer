@@ -1,6 +1,6 @@
 ## go routine 커뮤니케이션
 * 위 예제에서 main 함수는 go routine 에서 실행한 결과를 볼 수 없습니다.
-* go routine 간 통신을 위해 Go 언어에서는 Channel 을 제공합니다.
+* go routine 간 통신을 위해 Channel을 사용해 보겠습니다. 
 
 ### Channel 선언 및 할당
 ```go
@@ -43,9 +43,3 @@ func boring(msg string, c chan string) {
 * 위 코드의 main 함수에서 <-c 를 호출하면 메시지가 수신될때까지 블로킹 됩니다. 
 * 비슷하게 boring 함수의 c <- value 도 수신측에서 준비될 때까지 블로킹 됩니다. 
 * 발신자와 수신자가 모두 준비가 되어야 커뮤니케이션 할 수 있고 , 그렇지 않으면 대기상태로 빠지게됩니다. 
-
-## Buffered Channel
-* Buffer를 가진 채널을 만들어 동기화 이슈를 제거할 수있습니다. 
-```go
-	c := make(chan string, 10)
-```
